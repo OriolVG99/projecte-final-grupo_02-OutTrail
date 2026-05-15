@@ -21,13 +21,11 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 //Definicio de les rutes de l'API
 app.use("/api", routes);
 
-//Verificacio de la connexio amb la base de dades i inici del servidor
-try {
-  await sequelize.authenticate();
-  console.log("PostgreSQL ORM conectat");
-} catch (err) {
-  console.error("ERROR conectant PostgreSQL ORM:", err);
-}
+//Verificacio de la connexio amb la base de dades
+sequelize.authenticate()
+  .then(() => console.log("PostgreSQL ORM conectat"))
+  .catch(err => console.error("ERROR conectant PostgreSQL ORM:", err));
+
 
 const PORT = process.env.PORT || 4000;
 
