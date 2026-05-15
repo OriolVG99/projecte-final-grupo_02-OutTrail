@@ -1,0 +1,107 @@
+.login-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.login-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-size: 15px;
+  font-family: "Outfit", "Lato", sans-serif;
+  box-sizing: border-box;
+  background: #fdfdfd;
+  transition: all 0.2s ease;
+}
+
+.login-input:focus {
+  border-color: #004c06;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(0, 76, 6, 0.05);
+  outline: none;
+}
+
+.login-password-container {
+  position: relative;
+}
+
+.login-input-password {
+  padding-right: 45px;
+}
+
+.login-password-toggle {
+  position: absolute;
+  right: 15px;
+  top: 25px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.login-password-toggle:hover {
+  opacity: 1;
+}
+
+.login-remember-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+  font-family: "Outfit", "Lato", sans-serif;
+  font-size: 14px;
+  color: #555;
+}
+
+.login-remember-checkbox {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  accent-color: #004c06;
+  cursor: pointer;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 15px;
+  background: #004c06;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: "Outfit", "Lato", sans-serif;
+  box-shadow: 0 10px 20px rgba(0, 76, 6, 0.2);
+  margin-top: 10px;
+}
+
+.login-footer {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+.login-footer-link {
+  color: #004c06;
+  cursor: pointer;
+  font-weight: 700;
+  margin-left: 5px;
+}
+
+.login-footer-link:hover {
+  text-decoration: underline;
+}

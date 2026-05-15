@@ -1,0 +1,228 @@
+.negocis-full-spinner {
+  padding-top: 100px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.negocis-page {
+  padding-top: 100px;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: Lato, sans-serif;
+  padding-bottom: 120px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.negocis-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.negocis-title {
+  font-size: 32px;
+  font-weight: 900;
+  color: #333;
+}
+
+.negocis-my-btn {
+  background: #5f6360;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.negocis-my-btn:hover {
+  background: #7a7e7b;
+}
+
+.negocis-filter-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 35px;
+  border: 1px solid #eee;
+}
+
+.negocis-filter-row-one-line {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.negocis-search-wrapper {
+  position: relative;
+  flex: 2;
+  min-width: 200px;
+}
+
+.negocis-clear-x {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  opacity: 0.5;
+  font-weight: bold;
+}
+
+.negocis-input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.negocis-select {
+  flex: 1;
+  min-width: 140px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.negocis-search-btn {
+  padding: 12px 28px;
+  background: #004c06;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.negocis-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+.negocis-card {
+  background: white;
+  border-radius: 15px;
+  padding: 18px;
+  border: 1px solid #eee;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.negocis-photo-box {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.negocis-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.negocis-heart {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  font-size: 18px;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.negocis-card-info {
+  flex: 1;
+}
+
+.negocis-name {
+  font-size: 20px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.negocis-info {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.negocis-owner {
+  font-size: 12px;
+  color: #999;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+.negocis-no-results {
+  text-align: center;
+  opacity: 0.6;
+  font-size: 18px;
+  margin-top: 50px;
+}
+
+.negocis-pagination {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  align-items: center;
+}
+
+.negocis-page-btn {
+  padding: 10px 20px;
+  background: #004c06;
+  color: white;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 110px;
+}
+
+.negocis-page-btn-disabled {
+  padding: 10px 20px;
+  background: #eee;
+  color: #aaa;
+  border-radius: 999px;
+  border: none;
+  cursor: not-allowed;
+  min-width: 110px;
+}
+
+.negocis-page-number {
+  font-weight: bold;
+  font-size: 16px;
+  color: #444;
+}

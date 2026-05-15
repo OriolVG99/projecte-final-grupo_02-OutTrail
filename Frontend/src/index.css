@@ -1,0 +1,47 @@
+@import "./responsive.css";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-green: #004c06;
+  --primary-green-hover: #006608;
+  --primary-red: #b01a00;
+  --primary-red-hover: #8a1400;
+  --primary-grey: #5f6360;
+  --primary-grey-hover: #7a7e7b;
+  --title-grey: #333;
+}
+
+.app-title {
+  font-size: 32px !important;
+  font-weight: 900 !important;
+  color: var(--title-grey) !important;
+  margin-bottom: 25px !important;
+  font-family: 'Outfit', 'Lato', sans-serif !important;
+}
+
+button {
+  transition: all 0.2s ease !important;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btn-green:hover { background-color: var(--primary-green-hover) !important; }
+.btn-red:hover { background-color: var(--primary-red-hover) !important; }
+.btn-grey:hover { background-color: var(--primary-grey-hover) !important; }
+
+button:active {
+  transform: translateY(0);
+}

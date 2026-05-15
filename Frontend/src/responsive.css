@@ -1,0 +1,640 @@
+.mobile-burger-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  .app-header-container {
+    height: 50px !important;
+    padding: 0 12px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .app-header-container > div:first-child {
+    height: 35px !important;
+  }
+
+  .app-header-container img {
+    height: 30px !important;
+  }
+
+  .mobile-burger-btn {
+    display: block !important;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10001;
+    padding: 0;
+  }
+
+  .app-header-login {
+    display: flex;
+    align-items: center;
+  }
+
+  .app-header-login button {
+    font-size: 12px !important;
+    padding: 6px 12px !important;
+  }
+
+  .app-header-nav {
+    display: none !important;
+    position: fixed !important;
+    top: 50px !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    margin-left: 0 !important;
+    background: #004c06 !important;
+    padding: 0 !important;
+    z-index: 9998;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  .app-header-user-actions {
+    display: none !important;
+    position: fixed !important;
+    top: 50px !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 10px !important;
+    background: #004c06 !important;
+    padding: 12px 0 16px !important;
+    z-index: 9997;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+
+  .app-header-nav.open {
+    display: flex !important;
+  }
+
+  .app-header-user-actions.open {
+    display: flex !important;
+    top: 275px !important;
+  }
+
+  .app-header-nav div {
+    font-size: 15px !important;
+    padding: 13px 20px !important;
+    width: 100% !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  .app-header-nav div:hover,
+  .app-header-nav div[style*="rgba(255, 255, 255, 0.333)"] {
+    background: rgba(255,255,255,0.1) !important;
+  }
+
+  .app-header-user-actions button {
+    font-size: 13px !important;
+    padding: 8px 20px !important;
+  }
+
+  .app-header-user-actions span {
+    font-size: 14px !important;
+  }
+
+  .explora-rutes-page, .perfils-page,
+  .negocis-page, .rutes-page, .perfil-page, .favorits-page,
+  .seguit-page, .admin-page, .mis-rutes-page, .mis-negocis-page {
+    padding-top: 70px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .mapa-explorar-page, .mapa-detall-ruta-page, .mapa-crear-ruta-page, .editar-ruta-page {
+    flex-direction: column !important;
+  }
+
+  .mapa-detall-ruta-container, .mapa-crear-ruta-container, .editar-ruta-container, .mapa-explorar-content-wrapper {
+    flex-direction: column !important;
+    margin-top: 50px !important;
+  }
+
+  .mapa-explorar-sidebar, .mapa-detall-ruta-sidebar, .mapa-crear-ruta-sidebar, .editar-ruta-sidebar {
+    width: 100% !important;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1002;
+    height: auto !important;
+    max-height: 40vh;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+    background: white;
+    overflow-y: auto !important;
+  }
+
+  .mapa-explorar-sidebar-inner, .mapa-detall-ruta-sidebar-content, .mapa-crear-ruta-sidebar-inner, .editar-ruta-sidebar-inner {
+    min-width: 100% !important;
+  }
+
+  .mapa-explorar-sidebar[style*="width: 320px"],
+  .mapa-detall-ruta-sidebar[style*="width: 400px"],
+  .mapa-crear-ruta-sidebar[style*="width: 350px"],
+  .editar-ruta-sidebar[style*="width: 350px"] {
+    transform: translateY(0);
+  }
+
+  .mapa-explorar-collapse-btn, .collapse-btn {
+    top: 12px !important;
+    bottom: auto !important;
+    left: 12px !important;
+    transform: none !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25) !important;
+    z-index: 1003 !important;
+    border: none !important;
+    font-size: 14px !important;
+  }
+
+  .mapa-explorar-detail-panel {
+    width: 100% !important;
+    left: 0 !important;
+    top: auto !important;
+    bottom: 0 !important;
+    height: 40vh !important;
+    max-height: 40vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    overflow-y: auto !important;
+  }
+
+  .no-mobile-collapse {
+    display: none !important;
+  }
+
+  .mapa-explorar-floating-controls, .mapa-detall-ruta-map-controls {
+    bottom: 15px !important;
+    right: 10px !important;
+    z-index: 1001 !important;
+  }
+
+  .mapa-explorar-filters-container {
+    overflow-y: auto !important;
+    flex: 1 !important;
+    padding-bottom: 80px !important;
+  }
+
+  .mapa-detall-ruta-map-container, .crear-ruta-map-container {
+    flex: 1;
+    width: 100%;
+    height: 100vh;
+  }
+
+  .explora-rutes-filter-row, .explora-negocis-filter-row,
+  .negocis-filter-row-one-line, .rutes-filter-row-one-line,
+  .filter-row-one-line {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+
+  .explora-rutes-search-wrapper, .explora-negocis-search-wrapper,
+  .negocis-search-wrapper, .rutes-search-wrapper, .search-wrapper {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .explora-rutes-select, .explora-negocis-select,
+  .negocis-select, .rutes-select, .select {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .explora-rutes-small-input-wrapper {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .explora-rutes-search-btn, .explora-negocis-search-btn,
+  .negocis-search-btn, .rutes-search-btn, .search-btn {
+    width: 100% !important;
+    padding: 10px !important;
+  }
+
+  .explora-rutes-my-btn, .explora-negocis-my-btn, .following-btn {
+    padding: 8px 14px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+
+  .explora-rutes-header-row, .explora-negocis-header-row, .header-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .app-title, .title {
+    font-size: 22px !important;
+  }
+
+  .explora-rutes-grid, .explora-negocis-grid,
+  .negocis-grid, .rutes-grid, .mis-rutes-grid, .mis-negocis-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .explora-rutes-card, .explora-negocis-card,
+  .negocis-card, .rutes-card {
+    padding: 8px !important;
+    gap: 6px !important;
+  }
+
+  .explora-rutes-photo-box, .explora-negocis-photo-box,
+  .negocis-photo-box, .rutes-photo-box {
+    height: 90px !important;
+  }
+
+  .explora-rutes-name, .explora-negocis-name,
+  .negocis-name, .rutes-name {
+    font-size: 13px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .explora-rutes-info, .explora-negocis-info,
+  .negocis-info, .rutes-info {
+    font-size: 11px !important;
+  }
+
+  .explora-rutes-owner, .explora-negocis-owner {
+    font-size: 10px !important;
+    margin-top: 4px !important;
+  }
+
+  .perfils-page .card {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 12px !important;
+    gap: 8px !important;
+  }
+
+  .perfils-page .card-left {
+    gap: 10px !important;
+  }
+
+  .perfils-page .avatar {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .perfils-page .avatar-letter {
+    font-size: 16px !important;
+  }
+
+  .perfils-page .name {
+    font-size: 14px !important;
+  }
+
+  .perfils-page .username {
+    font-size: 12px !important;
+  }
+
+  .perfils-page .info {
+    font-size: 11px !important;
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .perfils-page .follow-btn, .perfils-page .unfollow-btn {
+    width: 100% !important;
+    text-align: center !important;
+    padding: 8px !important;
+    font-size: 12px !important;
+  }
+
+  .favorits-page {
+    padding-top: 70px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .favorits-title {
+    font-size: 22px !important;
+    margin-bottom: 15px !important;
+  }
+
+  .favorits-tabs {
+    gap: 4px !important;
+    padding: 4px !important;
+  }
+
+  .favorits-tab, .favorits-tab-active {
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+  }
+
+  .favorits-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .favorits-card {
+    padding: 8px !important;
+    gap: 6px !important;
+  }
+
+  .favorits-photo-box {
+    height: 90px !important;
+  }
+
+  .favorits-name {
+    font-size: 13px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .favorits-zona, .favorits-extra {
+    font-size: 11px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .favorits-creator {
+    font-size: 10px !important;
+    margin-top: 3px !important;
+  }
+
+  .favorits-heart {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 14px !important;
+  }
+
+  .negoci-detall-page {
+    padding-top: 65px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-bottom: 60px !important;
+  }
+
+  .negoci-detall-title {
+    font-size: 20px !important;
+  }
+
+  .negoci-detall-back-btn, .negoci-detall-create-post-btn {
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+  }
+
+  .negoci-detall-header-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .negoci-detall-slider {
+    height: 200px !important;
+    margin-bottom: 15px !important;
+  }
+
+  .negoci-detall-info-card {
+    padding: 12px !important;
+    margin-bottom: 15px !important;
+  }
+
+  .negoci-detall-header-info h1 {
+    font-size: 18px !important;
+  }
+
+  .negoci-detall-desc {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+
+  .negoci-detall-map-box {
+    height: 200px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .negoci-detall-owner-actions {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-bottom: 15px !important;
+  }
+
+  .negoci-detall-edit-btn, .negoci-detall-delete-btn {
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    flex: 1 !important;
+    text-align: center !important;
+  }
+
+  .negoci-detall-subtitle {
+    font-size: 18px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .negoci-detall-post-card {
+    padding: 12px !important;
+  }
+
+  .negoci-detall-post-title {
+    font-size: 15px !important;
+  }
+
+  .negoci-detall-post-content {
+    font-size: 12px !important;
+  }
+
+  .negoci-detall-post-photo-wrapper {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .negoci-detall-post-actions {
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .negoci-detall-layer-img {
+    width: 45px !important;
+    height: 45px !important;
+  }
+
+  .mapa-detall-ruta-edit-btn, .mapa-detall-ruta-delete-btn {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+
+  .mapa-detall-ruta-bottom-actions {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .mapa-detall-ruta-back-btn {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+  }
+
+  .perfil-page {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .perfil-page div[style*="justify-content: flex-end"],
+  .negoci-detall-page div[style*="justify-content: flex-end"] {
+    justify-content: flex-start !important;
+  }
+
+  .perfil-detall-page {
+    padding-top: 65px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .admin-business-requests-page {
+    padding-top: 65px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-bottom: 40px !important;
+  }
+
+  .admin-business-requests-page h1 {
+    font-size: 22px !important;
+    margin-bottom: 15px !important;
+  }
+
+  .admin-business-requests-card {
+    padding: 14px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .admin-business-requests-row-main {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .admin-business-requests-info {
+    gap: 8px !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    width: 100% !important;
+    padding-bottom: 5px !important;
+  }
+
+  .admin-business-requests-pill {
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .admin-business-requests-buttons {
+    width: 100% !important;
+    gap: 8px !important;
+  }
+
+  .admin-business-requests-accept-btn,
+  .admin-business-requests-reject-btn {
+    flex: 1 !important;
+    padding: 10px 12px !important;
+    font-size: 13px !important;
+    text-align: center !important;
+  }
+
+  .admin-business-requests-reject-box {
+    padding: 14px !important;
+    margin-top: 15px !important;
+  }
+
+  .admin-business-requests-textarea {
+    height: 80px !important;
+    font-size: 14px !important;
+    padding: 10px !important;
+  }
+
+  .admin-business-requests-reject-confirm-btn {
+    padding: 10px !important;
+    font-size: 14px !important;
+  }
+
+  .admin-business-requests-no-requests {
+    padding: 20px !important;
+    font-size: 14px !important;
+  }
+
+  .perfil-detall-page {
+    padding-top: 65px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .perfil-detall-header-card {
+    padding: 15px !important;
+    gap: 15px !important;
+    margin-bottom: 25px !important;
+  }
+
+  .perfil-detall-avatar-container {
+    width: 70px !important;
+    height: 70px !important;
+  }
+
+  .perfil-detall-nom {
+    font-size: 18px !important;
+  }
+
+  .perfil-detall-username {
+    font-size: 14px !important;
+  }
+
+  .perfil-detall-section-title {
+    font-size: 18px !important;
+    margin-bottom: 15px !important;
+  }
+
+  .perfil-detall-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .perfil-detall-card-image-container {
+    height: 90px !important;
+  }
+
+  .perfil-detall-card-content {
+    padding: 8px !important;
+  }
+
+  .perfil-detall-item-name {
+    font-size: 13px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .perfil-detall-info {
+    font-size: 11px !important;
+    margin-bottom: 2px !important;
+  }
+
+  .crear-ruta-input, .crear-ruta-textarea, .mapa-detall-ruta-textarea,
+  .explora-rutes-input, .explora-rutes-select, .input, .select,
+  .admin-business-requests-textarea {
+    font-size: 16px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .explora-rutes-grid, .explora-negocis-grid,
+  .negocis-grid, .rutes-grid, .favorits-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .favorits-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

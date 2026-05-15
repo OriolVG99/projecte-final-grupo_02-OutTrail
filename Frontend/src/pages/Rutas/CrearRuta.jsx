@@ -1,0 +1,595 @@
+import { MapContainer, TileLayer, Marker, Polyline, useMapEvents, ZoomControl, useMap, Tooltip } from "react-leaflet";
+import { useState, memo, useEffect, useRef } from "react";
+import { useAuth } from "../../context/AuthContext.jsx";
+import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
+import L from "leaflet";
+import Spinner from "../../components/Spinner.jsx";
+import Message from "../../components/Message.jsx";
+import "./CrearRuta.css";
+
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors
+} from "@dnd-kit/core";
+
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+  arrayMove
+} from "@dnd-kit/sortable";
+
+import { CSS } from "@dnd-kit/utilities";
+
+const ORS_API_KEY = import.meta.env.VITE_ORS_API_KEY;
+
+const thumbnails = {
+  satellite: "https://tiles.stadiamaps.com/tiles/alidade_satellite/12/2048/1365.jpg",
+  osm: "https://tile.openstreetmap.org/12/2048/1365.png",
+  topo: "https://tile.opentopomap.org/12/2048/1365.png"
+};
+
+const mapLayers = {
+  satellite: { url: "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}.jpg", attribution: "OutTrail" },
+  osm: { url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", attribution: "OutTrail" },
+  topo: { url: "https://tile.opentopomap.org/{z}/{x}/{y}.png", attribution: "OutTrail" }
+};
+
+function MapResizer({ isSidebarVisible }) {
+  const map = useMap();
+  useEffect(() => {
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 400);
+  }, [isSidebarVisible, map]);
+  return null;
+}
+
+function ChangeView({ center, zoom }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center, zoom);
+  }, [center, zoom, map]);
+  return null;
+}
+
+function FlyToSelected({ punts, selectedPointId }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!selectedPointId) return;
+    const p = punts.find(pt => pt.id === selectedPointId);
+    if (p) {
+      map.flyTo([p.lat, p.lng], 18, { duration: 0.6 });
+    }
+  }, [selectedPointId, punts, map]);
+  return null;
+}
+
+//Genera una icona combinada que indica si el punt esta seleccionat i si es un negoci propi
+const createCombinedIcon = (selected, tipus, esMeu) => {
+  let iconUrl = "/pinrojo.png";
+  if (tipus === 'negoci') {
+    iconUrl = esMeu ? "/pinverde.png" : "/pinamarillo.png";
+  }
+  return L.divIcon({
+    html: `
+      <div style="position: relative; width: 32px; height: 32px;">
+        <img src="${iconUrl}" style="width:28px;height:28px;" />
+        ${selected ? `<div style="position:absolute; top:0px; right:10.5px; background:#FFFFFF; color:red; width:15px; height:15px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:bold; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.3); border:1px solid #ccc;">×</div>` : ""}
+      </div>`,
+    className: "",
+    iconSize: [32, 32],
+    iconAnchor: [16, 32]
+  });
+};
+
+const selectedHaloIcon = L.divIcon({
+  html: `<div style="width:40px; height:40px; margin-top:2px; margin-left:2.5px; border-radius:50%; background:rgba(0,150,0,0.25); border:2px solid #008000; transform:translate(-4px,-8px);"></div>`,
+  className: "",
+  iconSize: [40, 40],
+  iconAnchor: [20, 32]
+});
+
+const iconNegociMeu = L.icon({
+  iconUrl: "/iconoverde.png",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32]
+});
+
+const iconNegociAltre = L.icon({
+  iconUrl: "/iconoamarillo.png",
+  iconSize: [32, 32],
+  iconAnchor: [16, 32]
+});
+
+//Item de la llista lateral que permet reordenar i editar el nom de les parades
+const SortablePunt = memo(function SortablePunt({ punt, setPunts, puntRefs, selectedPointId, setSelectedPointId }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: punt.id,
+    activationConstraint: { distance: 8 }
+  });
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <div
+      ref={(el) => { setNodeRef(el); puntRefs.current[punt.id] = el; }}
+      className="sortable-item-inner"
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        background: selectedPointId === punt.id ? "#e8f5e9" : "white",
+        border: selectedPointId === punt.id ? "1px solid #004c06" : "1px solid #ddd"
+      }}
+      {...attributes}
+      onClick={(e) => { e.stopPropagation(); setSelectedPointId(punt.id); }}
+    >
+      <div {...listeners} className="sortable-item-handle" onClick={(e) => e.stopPropagation()}>
+        ☰ Arrossega per moure
+      </div>
+      <input
+        className="sortable-item-input"
+        value={punt.nom}
+        onChange={(e) => {
+          const nouNom = e.target.value;
+          setPunts(prev => prev.map(p => (p.id === punt.id ? { ...p, nom: nouNom } : p)));
+        }}
+        onClick={(e) => { e.stopPropagation(); setSelectedPointId(punt.id); }}
+      />
+      <div className="sortable-item-footer">
+        <small className="sortable-item-coords">{Number(punt.lat).toFixed(5)}, {Number(punt.lng).toFixed(5)}</small>
+        <button
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onClick={(e) => { e.stopPropagation(); setPunts(prev => prev.filter(p => p.id !== punt.id)); }}
+          className="sortable-item-delete-btn"
+          style={{ background: isHovered ? "#8a1400" : "#b01a00" }}
+        >Eliminar</button>
+      </div>
+    </div>
+  );
+});
+
+export default function CrearRuta() {
+  const { user, token, loading } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [punts, setPunts] = useState([]);
+  const [nomRuta, setNomRuta] = useState("");
+  const [descripcio, setDescripcio] = useState("");
+  const [zona, setZona] = useState("");
+  const [dificultat, setDificultat] = useState("");
+  const [distancia, setDistancia] = useState("");
+  
+  const [imageFiles, setImageFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
+
+  const [geometry, setGeometry] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [mapType, setMapType] = useState("satellite");
+  const [selectedPointId, setSelectedPointId] = useState(null);
+  const [userLocation, setUserLocation] = useState([40.4168, -3.7038]);
+  const [hasLocationPermission, setHasLocationPermission] = useState(false);
+  const [esPublica, setEsPublica] = useState(true); 
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+  const [negocis, setNegocis] = useState([]);
+  
+  const [msg, setMsg] = useState(null);
+
+  const puntRefs = useRef({});
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const watch = navigator.geolocation.watchPosition(
+      pos => {
+        const { latitude, longitude } = pos.coords;
+        setUserLocation(prev => {
+          if (prev && prev[0] === latitude && prev[1] === longitude) return prev;
+          return [latitude, longitude];
+        });
+        setHasLocationPermission(true);
+      },
+      () => {
+        setHasLocationPermission(false);
+        setUserLocation([40.4168, -3.7038]);
+      },
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+    );
+    if (navigator.permissions) {
+      navigator.permissions.query({ name: 'geolocation' }).then(status => {
+        status.onchange = () => {
+          window.location.reload();
+        };
+      });
+    }
+    return () => navigator.geolocation.clearWatch(watch);
+  }, []);
+
+  useEffect(() => {
+    const fetchNegocis = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/api/negocis?limit=1000");
+        setNegocis(res.data.negocis || []);
+      } catch (err) {
+        console.error("Error carregant negocis", err);
+      }
+    };
+    fetchNegocis();
+  }, []);
+
+  const iconUser = new L.Icon({ iconUrl: "/puntblau.png", iconSize: [20, 20], iconAnchor: [10, 10] });
+
+  function AfegirPunt() {
+    useMapEvents({
+      click(e) {
+        setSelectedPointId(null);
+        const { lat, lng } = e.latlng;
+        setPunts(prev => [...prev, { id: Date.now().toString(), nom: `Punt ${prev.length + 1}`, lat, lng }]);
+      }
+    });
+    return null;
+  }
+
+  useEffect(() => {
+    if (punts.length < 2) { setGeometry(null); setDistancia(""); return; }
+    const timeout = setTimeout(async () => {
+      try {
+        const coords = punts.map(p => [p.lng, p.lat]);
+        const res = await fetch("https://api.openrouteservice.org/v2/directions/foot-hiking/geojson", {
+          method: "POST",
+          headers: { "Authorization": ORS_API_KEY, "Content-Type": "application/json" },
+          body: JSON.stringify({ coordinates: coords })
+        });
+        const data = await res.json();
+        if (data.features) {
+          const ruta = data.features[0];
+          setGeometry(ruta.geometry);
+          setDistancia((ruta.properties.summary.distance / 1000).toFixed(2));
+        }
+      } catch {}
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [punts]);
+
+  useEffect(() => {
+    if (punts.length === 0) return;
+
+    function samplePoints(points, minDistanceMeters = 1000) {
+      const result = [];
+      let last = null;
+      for (const p of points) {
+        if (!last) { result.push(p); last = p; continue; }
+        const dist = Math.sqrt(Math.pow((p.lng - last.lng) * 111320, 2) + Math.pow((p.lat - last.lat) * 110540, 2));
+        if (dist >= minDistanceMeters) { result.push(p); last = p; }
+      }
+      if (result.length > 0 && result[result.length - 1] !== points[points.length - 1]) {
+        result.push(points[points.length - 1]);
+      }
+      return result;
+    }
+
+    const timeout = setTimeout(async () => {
+      const sampled = samplePoints(punts);
+      const names = [];
+      for (const p of sampled) {
+        try {
+          const r = await fetch("http://localhost:4000/api/reverse-geocode", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ lat: p.lat, lon: p.lng })
+          });
+          const j = await r.json();
+          const n = j.address?.city || j.address?.town || j.address?.village;
+          if (n && !names.includes(n)) names.push(n);
+        } catch {}
+      }
+      if (names.length > 0) setZona(names.join(" - "));
+    }, 1200);
+
+    return () => clearTimeout(timeout);
+  }, [punts]);
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImageFiles(prev => [...prev, ...files]);
+    const newPreviews = files.map(file => URL.createObjectURL(file));
+    setPreviews(prev => [...prev, ...newPreviews]);
+  };
+
+  const removeImage = (index) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const sensors = useSensors(useSensor(PointerSensor));
+
+  const onDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setPunts(prev => {
+      const oldIndex = prev.findIndex(p => p.id === active.id);
+      const newIndex = prev.findIndex(p => p.id === over.id);
+      return arrayMove(prev, oldIndex, newIndex);
+    });
+  };
+
+  //Logica per guardar la ruta al servidor, enviant imatges, punts de pas i geometria
+  const guardarRuta = async () => {
+    if (saving) return;
+
+    const missingFields = [];
+    if (!nomRuta.trim()) missingFields.push("Nom");
+    if (!descripcio.trim()) missingFields.push("Descripció");
+    if (!zona.trim()) missingFields.push("Zona");
+    if (!dificultat.trim()) missingFields.push("Dificultat");
+    if (punts.length < 2) missingFields.push("almenys 2 punts al mapa");
+
+    if (missingFields.length > 0) {
+      setMsg({ 
+        title: "Atenció", 
+        text: `Falten els següents camps: ${missingFields.join(", ")}.`, 
+        color: "yellow",
+        buttonText: "D'acord",
+        onButtonClick: () => setMsg(null)
+      });
+      return;
+    }
+    setSaving(true);
+
+    const formData = new FormData();
+    formData.append("nom", nomRuta);
+    formData.append("descripcio", descripcio);
+    formData.append("zona", zona);
+    formData.append("dificultat", dificultat);
+    formData.append("es_publica", esPublica);
+    formData.append("distancia_km", distancia);
+    formData.append("punts", JSON.stringify(punts));
+    if (geometry) formData.append("geojson", JSON.stringify(geometry));
+    imageFiles.forEach(file => {
+      formData.append("fotos", file);
+    });
+
+    try {
+      const res = await axios.post(
+        "http://localhost:4000/api/rutes",
+        formData,
+        { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
+      );
+      setSaving(false);
+      setMsg({ 
+        title: "Èxit", 
+        text: "Ruta creada!", 
+        color: "green", 
+        onButtonClick: () => navigate(`/rutes/${res.data.id_ruta}`, { 
+          state: { fromMe: location.state?.fromMe },
+          replace: true 
+        }) 
+      });
+    } catch (err) {
+      console.error(err);
+      setMsg({ title: "Error", text: "Error en guardar la ruta", color: "red" });
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <Spinner />;
+  if (!user) return <p style={{ padding: "2rem" }}>Inicia sessió per crear rutes.</p>;
+
+  return (
+    <div 
+      className="mapa-crear-ruta-page"
+      onClick={(e) => {
+        if (!e.target.closest('.sortable-item-inner') && !e.target.closest('.leaflet-marker-icon') && !e.target.closest('.mapa-crear-ruta-sidebar')) {
+          setSelectedPointId(null);
+        }
+      }}
+    >
+      {msg && <Message title={msg.title} text={msg.text} color={msg.color} buttonText="D'acord" onButtonClick={msg.onButtonClick || (() => setMsg(null))} />}
+
+      <div className="mapa-crear-ruta-container">
+        
+        <div 
+          className="mapa-crear-ruta-sidebar"
+          style={{ width: isSidebarVisible ? "350px" : "0px", opacity: isSidebarVisible ? 1 : 0, transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)" }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="mapa-crear-ruta-sidebar-inner">
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "15px" }}>
+               <button onClick={() => navigate(-1)} className="mapa-crear-ruta-back-btn">← Tornar</button>
+            </div>
+            
+            <h2 className="mapa-crear-ruta-title">CREAR NOVA RUTA</h2>
+
+            <div className="mapa-crear-ruta-form-group">
+              <label><strong>Nom</strong></label>
+              <input className="mapa-crear-ruta-input" placeholder="Ex: Camí de Ronda" value={nomRuta} onChange={(e) => setNomRuta(e.target.value)} />
+              
+              <label><strong>Descripció</strong></label>
+              <textarea className="mapa-crear-ruta-textarea" placeholder="Explica com és la ruta..." value={descripcio} onChange={(e) => setDescripcio(e.target.value)} />
+              
+              <label><strong>Zona</strong></label>
+              <input className="mapa-crear-ruta-input" placeholder="S'omple automàticament" value={zona} onChange={(e) => setZona(e.target.value)} />
+
+              <label><strong>Dificultat</strong></label>
+              <select className="mapa-crear-ruta-input" value={dificultat} onChange={(e) => setDificultat(e.target.value)}>
+                  <option value="">Selecciona dificultat</option>
+                  <option value="Molt fàcil">Molt fàcil</option>
+                  <option value="Fàcil">Fàcil</option>
+                  <option value="Mitjana">Mitjana</option>
+                  <option value="Difícil">Difícil</option>
+                  <option value="Expert">Expert</option>
+              </select>
+
+              <label><strong>Visibilitat</strong></label>
+              <select className="mapa-crear-ruta-input" value={esPublica} onChange={(e) => setEsPublica(e.target.value === "true")}>
+                  <option value="true">Pública (tothom la pot veure)</option>
+                  <option value="false">Privada (només jo)</option>
+              </select>
+
+              <label><strong>Fotos de la ruta</strong></label>
+              <div 
+                className="mapa-crear-ruta-dropzone"
+                onClick={() => fileInputRef.current.click()}
+              >
+                <p className="mapa-crear-ruta-dropzone-text">Prem per pujar imatges</p>
+                <input 
+                  type="file" 
+                  multiple 
+                  accept="image/*" 
+                  ref={fileInputRef} 
+                  style={{ display: "none" }} 
+                  onChange={handleFileChange} 
+                />
+              </div>
+
+              <div className="mapa-crear-ruta-previews-container">
+                {previews.map((src, index) => (
+                  <div key={index} className="mapa-crear-ruta-preview-item">
+                    <img src={src} className="mapa-crear-ruta-preview-img" />
+                    <button 
+                      onClick={() => removeImage(index)}
+                      className="mapa-crear-ruta-remove-preview"
+                    >×</button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mapa-crear-ruta-distance-box">
+                  <strong>Distància total:</strong> {distancia || "0.00"} km
+              </div>
+            </div>
+
+            <h3 className="mapa-crear-ruta-section-header">Punts de pas ({punts.length})</h3>
+            <p style={{ fontSize: '12px', color: '#888', marginTop: '-5px', marginBottom: '10px', fontStyle: 'italic' }}>Clica sobre el mapa per crear una parada</p>
+            
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+              <SortableContext items={punts.map(p => p.id)} strategy={verticalListSortingStrategy}>
+                <div className="mapa-crear-ruta-punts-container">
+                  {punts.map((p) => (
+                    <SortablePunt key={p.id} punt={p} setPunts={setPunts} puntRefs={puntRefs} selectedPointId={selectedPointId} setSelectedPointId={setSelectedPointId} />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+
+            <button className="mapa-crear-ruta-save-btn" onClick={guardarRuta} disabled={saving}>
+              {saving ? "Guardant..." : "Guardar Ruta"}
+            </button>
+          </div>
+        </div>
+
+        <div style={{ flex: 1, position: "relative" }} onClick={() => setSelectedPointId(null)}>
+          <button className="collapse-btn" onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
+            {isSidebarVisible ? "◀" : "▶"}
+          </button>
+
+          <MapContainer
+            center={userLocation}
+            zoom={hasLocationPermission ? 13 : 6}
+            zoomControl={false}
+            style={{ height: "100%", width: "100%" }}
+            minZoom={3}
+            maxBounds={[[-90, -180], [90, 180]]}
+          >
+            <ChangeView center={userLocation} zoom={hasLocationPermission ? 13 : 6} />
+            <MapResizer isSidebarVisible={isSidebarVisible} />
+            <ZoomControl position="topright" />
+            <TileLayer 
+              url={mapLayers[mapType].url} 
+              attribution={mapLayers[mapType].attribution} 
+              noWrap={true}
+            />
+            <AfegirPunt />
+
+            {negocis.filter(n => !punts.some(p => p.tipus === 'negoci' && p.nom === n.nom)).map(negoci => {
+              const esMeu = user && negoci.id_usuari === user.id;
+              return (
+                <Marker
+                  key={`negoci-${negoci.id_negoci}`}
+                  position={[negoci.latitud, negoci.longitud]}
+                  icon={esMeu ? iconNegociMeu : iconNegociAltre}
+                  eventHandlers={{
+                    click: () => {
+                      setPunts(prev => [...prev, {
+                        id: Date.now().toString() + "-" + negoci.id_negoci,
+                        nom: negoci.nom,
+                        lat: negoci.latitud,
+                        lng: negoci.longitud,
+                        tipus: "negoci",
+                        id_usuari_negoci: negoci.id_usuari
+                      }]);
+                      setMsg({ title: "Negoci afegit", text: `S'ha afegit ${negoci.nom} com a parada a la teva ruta!`, color: "green" });
+                    }
+                  }}
+                >
+                  <Tooltip direction="top" offset={[0, -30]}>Negoci {negoci.nom} (Clic per afegir com a parada)</Tooltip>
+                </Marker>
+              );
+            })}
+
+            {punts.map((p) => selectedPointId === p.id && (
+              <Marker key={p.id + "-halo"} position={[p.lat, p.lng]} icon={selectedHaloIcon} interactive={false} />
+            ))}
+
+            {punts.map((p) => {
+              //Deteccio robusta de propietat del negoci per aplicar el color de pin corresponent
+              const esMeu = p.tipus === 'negoci' && (
+                p.id_usuari_negoci ? Number(p.id_usuari_negoci) === Number(user?.id) : 
+                negocis.find(n => 
+                  n.nom === p.nom && 
+                  Number(n.latitud) === Number(p.lat) && 
+                  Number(n.longitud) === Number(p.lng)
+                )?.id_usuari === user?.id
+              );
+              return (
+                <Marker
+                  key={p.id}
+                  position={[p.lat, p.lng]}
+                  icon={createCombinedIcon(selectedPointId === p.id, p.tipus, esMeu)}
+                  eventHandlers={{
+                    click: (e) => {
+                      const target = e.originalEvent.target;
+                      //Logica per esborrar des de la "X" del icona del mapa
+                      if (target.innerText === "×") {
+                        setPunts(prev => prev.filter(x => x.id !== p.id));
+                        setSelectedPointId(null);
+                        return;
+                      }
+                      setSelectedPointId(p.id);
+                      puntRefs.current[p.id]?.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                  }}
+                />
+              );
+            })}
+
+            {userLocation && (
+              <Marker position={userLocation} icon={iconUser}>
+                <Tooltip direction="top" offset={[0, -10]}>La teva ubicació</Tooltip>
+              </Marker>
+            )}
+
+            <FlyToSelected punts={punts} selectedPointId={selectedPointId} />
+
+            {geometry && <Polyline positions={geometry.coordinates.map(c => [c[1], c[0]])} color="#0936cc" weight={4} opacity={0.7} />}
+          </MapContainer>
+
+          <div className="mapa-crear-ruta-map-controls">
+            <div className="mapa-crear-ruta-layer-btn" onClick={() => setMapType(prev => prev === "satellite" ? "osm" : prev === "osm" ? "topo" : "satellite")}>
+              <img src={thumbnails[mapType]} alt="map" className="mapa-crear-ruta-layer-img" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {saving && (
+        <div className="mapa-crear-ruta-overlay"><Spinner /></div>
+      )}
+    </div>
+  );
+}

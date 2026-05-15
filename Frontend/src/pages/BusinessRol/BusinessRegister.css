@@ -1,0 +1,107 @@
+.business-register-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f0f4f0 0%, #e8e8e3 100%);
+  padding: 40px 20px;
+  font-family: 'Outfit', 'Lato', sans-serif;
+}
+
+.business-register-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.business-register-card {
+  background: white;
+  padding: 40px;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.business-register-title {
+  text-align: center;
+  margin-bottom: 8px;
+  font-weight: 900;
+  font-size: 32px;
+  color: #004c06;
+  letter-spacing: -1px;
+}
+
+.business-register-subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 15px;
+}
+
+.business-register-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-size: 15px;
+  font-family: 'Outfit', 'Lato', sans-serif;
+  background: #fdfdfd;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.business-register-input:focus {
+  border-color: #004c06;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(0, 76, 6, 0.05);
+  outline: none;
+}
+
+.business-register-btn {
+  width: 100%;
+  padding: 15px;
+  background: #004c06;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'Outfit', 'Lato', sans-serif;
+  box-shadow: 0 10px 20px rgba(0, 76, 6, 0.2);
+  margin-top: 10px;
+}
+
+.business-register-bottom-text,
+.business-register-bottom-text-2 {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+.business-register-bottom-text-2 {
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.business-register-link {
+  color: #004c06;
+  cursor: pointer;
+  font-weight: 700;
+  margin-left: 5px;
+}
+
+.business-register-link:hover {
+  text-decoration: underline;
+}

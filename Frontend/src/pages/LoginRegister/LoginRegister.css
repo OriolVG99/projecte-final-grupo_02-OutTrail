@@ -1,0 +1,75 @@
+.login-register-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #f0f4f0 0%, #e8e8e3 100%);
+  padding: 20px;
+  font-family: 'Outfit', 'Lato', sans-serif;
+}
+
+.login-register-card {
+  background: white;
+  padding: 40px;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+}
+
+.login-register-logo-container {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-register-logo-container h1 {
+  font-size: 32px;
+  font-weight: 900;
+  color: #004c06;
+  margin: 0;
+  letter-spacing: -1px;
+}
+
+.login-register-logo-container p {
+  color: #666;
+  margin-top: 5px;
+  font-size: 15px;
+}
+
+.login-register-switch-container {
+  display: flex;
+  background: #f0f0f0;
+  padding: 6px;
+  border-radius: 14px;
+  margin-bottom: 30px;
+  gap: 0;
+}
+
+.login-register-switch-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.login-register-switch-btn.active {
+  background: white;
+  color: #004c06;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.login-register-switch-btn.inactive {
+  background: transparent;
+  color: #777;
+}
+
+.login-register-switch-btn.inactive:hover {
+  color: #333;
+}

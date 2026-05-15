@@ -1,0 +1,265 @@
+.seguits-full-spinner {
+  padding-top: 100px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.seguits-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.seguits-page {
+  padding-top: 100px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Lato, sans-serif;
+  padding-bottom: 120px;
+}
+
+.seguits-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.seguits-title {
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.seguits-back-btn {
+  background: #5f6360;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.seguits-subtitle {
+  font-size: 20px;
+  font-weight: 900;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.seguits-filter-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
+}
+
+.seguits-filter-row-one-line {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.seguits-search-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.seguits-clear-x {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0.6;
+}
+
+.seguits-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: Lato, sans-serif;
+}
+
+.seguits-select {
+  width: 140px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-family: Lato, sans-serif;
+  background: white;
+}
+
+.seguits-search-btn {
+  padding: 10px 20px;
+  background: #004c06;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  height: 38px;
+  white-space: nowrap;
+}
+
+.seguits-no-results {
+  margin-top: 20px;
+  opacity: 0.7;
+}
+
+.seguits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.seguits-card {
+  background: white;
+  padding: 20px 25px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #eee;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.seguits-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+  border-color: #ddd;
+}
+
+.seguits-card-left {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.seguits-avatar {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.seguits-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.seguits-avatar-letter {
+  font-size: 26px;
+  font-weight: bold;
+  color: #888;
+}
+
+.seguits-name {
+  font-size: 19px;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.seguits-username {
+  font-size: 15px;
+  color: #666;
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+.seguits-info {
+  font-size: 14px;
+  color: #777;
+  margin-top: 6px;
+  display: flex;
+  gap: 15px;
+}
+
+.seguits-role-caminant {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #e0f5e5;
+  color: #006b1f;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.seguits-role-business {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #e0ecff;
+  color: #0040a8;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.seguits-unfollow-btn {
+  background: #b01a00;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.seguits-pagination {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
+}
+
+.seguits-page-btn {
+  padding: 8px 15px;
+  background: #004c06;
+  color: white;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 90px;
+  text-align: center;
+}
+
+.seguits-page-btn-disabled {
+  padding: 8px 15px;
+  background: #cccccc;
+  color: #666666;
+  border-radius: 999px;
+  border: none;
+  cursor: not-allowed;
+  font-weight: bold;
+  min-width: 90px;
+  text-align: center;
+}
+
+.seguits-page-number {
+  font-weight: bold;
+  font-size: 16px;
+}

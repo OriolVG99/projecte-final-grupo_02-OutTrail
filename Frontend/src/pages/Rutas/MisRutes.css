@@ -1,0 +1,182 @@
+.mis-rutes-full-spinner {
+  padding-top: 100px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mis-rutes-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+
+.mis-rutes-page {
+  padding-top: 100px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Lato', sans-serif;
+  padding-bottom: 120px;
+}
+
+.mis-rutes-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.mis-rutes-title {
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.mis-rutes-create-btn {
+  background: #5f6360;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.mis-rutes-no-results {
+  opacity: 0.7;
+}
+
+.mis-rutes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.mis-rutes-card {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.mis-rutes-photo-box {
+  width: 90px;
+  height: 90px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mis-rutes-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mis-rutes-card-info {
+  flex: 1;
+}
+
+.mis-rutes-name {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.mis-rutes-info {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.mis-rutes-visibility-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.mis-rutes-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mis-rutes-view-btn {
+  background: #0066cc;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.mis-rutes-edit-btn {
+  background: #004c06;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.mis-rutes-delete-btn {
+  background: #b01a00;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.mis-rutes-pagination {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  align-items: center;
+}
+
+.mis-rutes-page-btn {
+  padding: 10px 22px;
+  background: #004c06;
+  color: white;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 110px;
+}
+
+.mis-rutes-page-btn:disabled {
+  background: #eee;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.mis-rutes-page-text {
+  font-weight: bold;
+  color: #333;
+  font-size: 16px;
+}

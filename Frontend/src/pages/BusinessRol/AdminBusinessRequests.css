@@ -1,0 +1,156 @@
+.admin-business-requests-page {
+  padding-top: 100px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Outfit', 'Lato', sans-serif;
+  padding-bottom: 50px;
+}
+
+.admin-business-requests-spinner-wrapper {
+  padding-top: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.admin-business-requests-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.admin-business-requests-no-requests {
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+  margin-top: 40px;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px dashed #ccc;
+}
+
+.admin-business-requests-card {
+  background: #fff;
+  padding: 20px 25px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+
+.admin-business-requests-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+  border-color: #ddd;
+}
+
+.admin-business-requests-row-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-business-requests-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-business-requests-pill {
+  background: #f4f6f5;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #e8e8e3;
+}
+
+.admin-business-requests-pill strong {
+  color: #555;
+  font-weight: 800;
+}
+
+.admin-business-requests-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-business-requests-accept-btn {
+  background: #004c06;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.admin-business-requests-reject-btn {
+  background: #b01a00;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.admin-business-requests-reject-box {
+  margin-top: 25px;
+  background: #fdfdfd;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.admin-business-requests-textarea {
+  width: 100%;
+  height: 100px;
+  padding: 15px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-family: 'Outfit', 'Lato', sans-serif;
+  box-sizing: border-box;
+  font-size: 15px;
+  resize: vertical;
+  background: white;
+  transition: all 0.2s;
+}
+
+.admin-business-requests-textarea:focus {
+  border-color: #b01a00;
+  box-shadow: 0 0 0 4px rgba(176, 26, 0, 0.05);
+  outline: none;
+}
+
+.admin-business-requests-reject-confirm-btn {
+  margin-top: 15px;
+  background: #b01a00;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+  font-size: 15px;
+}

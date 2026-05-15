@@ -1,0 +1,516 @@
+.mapa-detall-ruta-page {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Lato', sans-serif;
+}
+
+.mapa-detall-ruta-full-spinner {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Lato', sans-serif;
+}
+
+.mapa-detall-ruta-container {
+  margin-top: 70px;
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.mapa-detall-ruta-sidebar {
+  background: white;
+  border-right: 1px solid #eee;
+  z-index: 10;
+  overflow-x: hidden;
+}
+
+.mapa-detall-ruta-sidebar-content {
+  padding: 20px;
+}
+
+.mapa-detall-ruta-bottom-actions {
+  padding: 20px 0;
+  border-top: 1px solid #eee;
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.mapa-detall-ruta-edit-btn {
+  flex: 1;
+  padding: 12px;
+  background: #004c06;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.mapa-detall-ruta-delete-btn {
+  flex: 1;
+  padding: 12px;
+  background: #b01a00;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.mapa-detall-ruta-fav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s;
+}
+
+.mapa-detall-ruta-back-btn {
+  padding: 10px 20px;
+  background: #5f6360;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.mapa-detall-ruta-main-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.mapa-detall-ruta-slider {
+  position: relative;
+  width: 100%;
+}
+
+.mapa-detall-ruta-slider-btn-left {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  z-index: 2;
+}
+
+.mapa-detall-ruta-slider-btn-right {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  z-index: 2;
+}
+
+.mapa-detall-ruta-lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+
+.mapa-detall-ruta-lightbox-content {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.mapa-detall-ruta-lightbox-img {
+  max-width: 100%;
+  max-height: 90vh;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.mapa-detall-ruta-close-lightbox {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 3001;
+}
+
+.mapa-detall-ruta-title {
+  font-size: 28px;
+  font-weight: 900;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.mapa-detall-ruta-meta {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.mapa-detall-ruta-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #444;
+  margin-bottom: 30px;
+}
+
+.mapa-detall-ruta-section {
+  margin-bottom: 30px;
+}
+
+.mapa-detall-ruta-section-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 8px;
+  color: #004c06;
+}
+
+.mapa-detall-ruta-parades-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.parada-item-clickable {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #f0f0f0;
+  background-color: transparent;
+  border-left: 4px solid transparent;
+}
+
+.parada-item-clickable:hover {
+  background-color: #f9f9f9;
+}
+
+.parada-item-clickable.selected {
+  background-color: #f0f8ff;
+  border-left: 4px solid #004c06;
+}
+
+.mapa-detall-ruta-parada-num {
+  background: #004c06;
+  color: white;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.mapa-detall-ruta-parada-name {
+  font-size: 15px;
+  font-weight: bold;
+  color: #333;
+}
+
+.mapa-detall-ruta-coords {
+  font-size: 11px;
+  color: #999;
+  margin-top: 2px;
+}
+
+.mapa-detall-ruta-review-form {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  border: 1px solid #eee;
+}
+
+.mapa-detall-ruta-textarea {
+  width: 100%;
+  height: 90px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  resize: none;
+  box-sizing: border-box;
+  font-family: Lato, sans-serif;
+}
+
+.mapa-detall-ruta-submit-btn {
+  width: 100%;
+  padding: 12px;
+  background: #004c06;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 12px;
+  box-shadow: 0 4px 10px rgba(0, 76, 6, 0.2);
+}
+
+.mapa-detall-ruta-reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mapa-detall-ruta-review-card {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.mapa-detall-ruta-review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.mapa-detall-ruta-author-name {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+}
+
+.mapa-detall-ruta-stars {
+  color: #ffc107;
+  font-size: 14px;
+}
+
+.mapa-detall-ruta-review-text {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
+
+.mapa-detall-ruta-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mapa-detall-ruta-avatar-placeholder {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #777;
+}
+
+.mapa-detall-ruta-delete-review-btn-text {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: #b01a00;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.mapa-detall-ruta-map-container {
+  flex: 1;
+  position: relative;
+}
+
+.mapa-detall-ruta-map-controls {
+  position: absolute;
+  bottom: 30px;
+  right: 20px;
+  z-index: 1100;
+}
+
+.mapa-detall-ruta-layer-btn {
+  background: white;
+  border-radius: 12px;
+  padding: 2px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  overflow: hidden;
+}
+
+.mapa-detall-ruta-layer-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.mapa-detall-ruta-sort-select {
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  background: white;
+}
+
+.mapa-detall-ruta-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.mapa-detall-ruta-page-btn {
+  padding: 5px 12px;
+  background: #004c06;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.mapa-detall-ruta-page-info {
+  font-size: 13px;
+  font-weight: bold;
+  color: #555;
+}
+
+.marker-selected-detall {
+  filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5));
+  transform: scale(1.2);
+  transition: all 0.3s;
+}
+
+.star {
+  cursor: pointer;
+  font-size: 24px;
+  transition: color 0.2s;
+  color: #ddd;
+}
+
+.star.filled {
+  color: #ffc107;
+}
+
+.collapse-btn {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 25px;
+  height: 50px;
+  background: white;
+  border: 1px solid #ddd;
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+  cursor: pointer;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  color: #004c06;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.collapse-btn:hover {
+  background: #f0f0f0;
+}
+
+.fav-btn-overlay {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+  z-index: 5;
+}
+
+.fav-btn-overlay:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.fav-btn-overlay:hover:not(:disabled) {
+  transform: scale(1.1);
+}
+
+.mapa-detall-ruta-download-btn {
+  background: #f0f4f0;
+  border: 1px solid #004c06;
+  color: #004c06;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.mapa-detall-ruta-download-btn:hover {
+  background: #004c06;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 76, 6, 0.2);
+}
