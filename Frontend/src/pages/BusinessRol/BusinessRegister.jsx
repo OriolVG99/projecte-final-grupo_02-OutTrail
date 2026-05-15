@@ -28,7 +28,7 @@ export default function BusinessRegister() {
     setLoading(true);
     try {
       const normalizedForm = { ...form, email: form.email.toLowerCase() };
-      await axios.post("http://localhost:4000/api/register-business", normalizedForm);
+      await axios.post("/api/register-business", normalizedForm);
       setModal({
         title: "Sol·licitud enviada",
         text: "El teu compte serà revisat per l'administrador.",

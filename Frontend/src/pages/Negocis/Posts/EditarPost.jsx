@@ -28,7 +28,7 @@ export default function EditarPost() {
 
   const loadPost = async () => {
     try {
-      const res = await axios.get(`http://localhost:4000/api/posts_negoci/${id}`);
+      const res = await axios.get(`/api/posts_negoci/${id}`);
       const post = res.data.post;
       setTitol(post.titol);
       setContingut(post.contingut);
@@ -79,7 +79,7 @@ export default function EditarPost() {
       form.append("contingut", contingut);
       form.append("existingFotos", JSON.stringify(existingFotos));
       newFotos.forEach(f => form.append("fotos", f));
-      await axios.put(`http://localhost:4000/api/posts_negoci/${id}`, form, {
+      await axios.put(`/api/posts_negoci/${id}`, form, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
       });
       navigate(`/negocis/${idNegoci}`, { replace: true });
@@ -105,7 +105,7 @@ export default function EditarPost() {
             <div className="editar-post-preview-grid">
               {existingFotos.map((f, idx) => (
                 <div key={idx} className="editar-post-preview-item">
-                  <img src={`http://localhost:4000/uploads/${f}`} className="editar-post-preview-img" />
+                  <img src={`/uploads/${f}`} className="editar-post-preview-img" />
                   <button type="button" className="editar-post-remove-foto-btn" onClick={() => removeExistingFoto(idx)}>✕</button>
                 </div>
               ))}

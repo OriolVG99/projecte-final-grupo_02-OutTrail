@@ -222,7 +222,7 @@ export default function EditarRuta() {
   useEffect(() => {
     const fetchNegocis = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/negocis?limit=1000");
+        const res = await axios.get("/api/negocis?limit=1000");
         setNegocis(res.data.negocis || []);
       } catch (err) {
         console.error("Error carregant negocis", err);
@@ -237,7 +237,7 @@ export default function EditarRuta() {
     if (!token || loading) return;
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
-    axios.get(`http://localhost:4000/api/rutes/${id}`, config)
+    axios.get(`/api/rutes/${id}`, config)
       .then(res => {
         const { ruta, parades: paradesDB, geometry: geomDB } = res.data;
 
@@ -331,7 +331,7 @@ export default function EditarRuta() {
       const names = [];
       for (const p of sampled) {
         try {
-          const r = await fetch("http://localhost:4000/api/reverse-geocode", {
+          const r = await fetch("/api/reverse-geocode", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ lat: p.lat, lon: p.lng })
@@ -427,7 +427,7 @@ export default function EditarRuta() {
 
     try {
       await axios.put(
-        `http://localhost:4000/api/rutes/${id}`,
+        `/api/rutes/${id}`,
         formData,
         { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
       );
@@ -518,7 +518,7 @@ export default function EditarRuta() {
                   {existingFotos.map((filename, index) => (
                     <div key={index} className="editar-ruta-foto-item">
                       <img
-                        src={`http://localhost:4000/uploads/${filename}`}
+                        src={`/uploads/${filename}`}
                         className="editar-ruta-foto-img"
                         alt=""
                       />

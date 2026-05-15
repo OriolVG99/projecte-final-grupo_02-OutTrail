@@ -25,7 +25,7 @@ export default function Perfils() {
 
   const loadZones = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/users/zones", {
+      const res = await axios.get("/api/users/zones", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setZones(res.data.zones);
@@ -35,7 +35,7 @@ export default function Perfils() {
   const loadUsers = async (customPage = page, allowEmpty = true) => {
     setLoadingUsers(true);
     try {
-      const res = await axios.get("http://localhost:4000/api/users", {
+      const res = await axios.get("/api/users", {
         headers: { Authorization: `Bearer ${token}` },
         params: { search, zona, experiencia, role: roleFilter, page: customPage, limit: PAGE_SIZE }
       });
@@ -91,7 +91,7 @@ export default function Perfils() {
     setActionLoading(id);
     setGlobalLoading(true);
     try {
-      await axios.post(`http://localhost:4000/api/follow/${id}`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post(`/api/follow/${id}`, {}, { headers: { Authorization: `Bearer ${token}` } });
       await new Promise((r) => setTimeout(r, 200));
       await loadUsers(page);
     } catch (err) {}
@@ -103,7 +103,7 @@ export default function Perfils() {
     setActionLoading(id);
     setGlobalLoading(true);
     try {
-      await axios.delete(`http://localhost:4000/api/follow/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`/api/follow/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       await new Promise((r) => setTimeout(r, 200));
       await loadUsers(page);
     } catch (err) {}
@@ -157,7 +157,7 @@ export default function Perfils() {
             <div className="card-left">
               <div className="avatar">
                 {u.foto_perfil ? (
-                  <img src={`http://localhost:4000/uploads/${u.foto_perfil}`} className="avatar-img" />
+                  <img src={`/uploads/${u.foto_perfil}`} className="avatar-img" />
                 ) : (
                   <span className="avatar-letter">{u.nom.charAt(0).toUpperCase()}</span>
                 )}

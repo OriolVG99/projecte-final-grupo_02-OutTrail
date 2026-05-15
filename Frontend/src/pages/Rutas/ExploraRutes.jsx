@@ -32,7 +32,7 @@ export default function ExploraRutes() {
     setLoading(true);
     try {
       const offset = (customPage - 1) * PAGE_SIZE;
-      const res = await axios.get("http://localhost:4000/api/rutes-explora", {
+      const res = await axios.get("/api/rutes-explora", {
         params: {
           search,
           zona,
@@ -57,7 +57,7 @@ export default function ExploraRutes() {
 
   const loadZones = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/rutes/zones");
+      const res = await axios.get("/api/rutes/zones");
       setZones(res.data.zones || []);
     } catch (err) {
       console.error("Error carregant zones", err);
@@ -67,7 +67,7 @@ export default function ExploraRutes() {
   const loadFavorits = async () => {
     if (!token) return;
     try {
-      const res = await axios.get("http://localhost:4000/api/favorits/me", {
+      const res = await axios.get("/api/favorits/me", {
         headers: { Authorization: `Bearer ${token}` },
         params: { type: "rutes", limit: 999, offset: 0 }
       });
@@ -86,7 +86,7 @@ export default function ExploraRutes() {
     setFavLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/favorits/toggle",
+        "/api/favorits/toggle",
         { id_ruta },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -223,7 +223,7 @@ export default function ExploraRutes() {
                   <div className="explora-rutes-photo-box">
                     {fotos.length > 0 ? (
                       <img
-                        src={`http://localhost:4000/uploads/${fotos[0]}`}
+                        src={`/uploads/${fotos[0]}`}
                         className="explora-rutes-photo"
                         alt={r.nom}
                       />

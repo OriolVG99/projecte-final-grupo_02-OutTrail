@@ -29,8 +29,8 @@ export default function PerfilDetall() {
       try {
         const config = { headers: { Authorization: `Bearer ${token}` } };
         const [resUser, resFavorits] = await Promise.all([
-          axios.get(`http://localhost:4000/api/users/${id}`, config),
-          axios.get("http://localhost:4000/api/favorits/me?limit=999", config),
+          axios.get(`/api/users/${id}`, config),
+          axios.get("/api/favorits/me?limit=999", config),
         ]);
         const favData = resFavorits.data.favorits || [];
         favoritsRef.current = favData;
@@ -56,7 +56,7 @@ export default function PerfilDetall() {
         headers: { Authorization: `Bearer ${token}` },
         params: { limit: PAGE_SIZE + 1, offset: (customPage - 1) * PAGE_SIZE }
       };
-      const url = perfil.id_role === 1 ? `http://localhost:4000/api/rutes/user/${id}` : `http://localhost:4000/api/negocis/user/${id}`;
+      const url = perfil.id_role === 1 ? `/api/rutes/user/${id}` : `/api/negocis/user/${id}`;
       const res = await axios.get(url, config);
       const rawItems = perfil.id_role === 1 ? res.data.rutes || [] : res.data.negocis || [];
       const normalizedItems = rawItems.map((item) => {
@@ -80,7 +80,7 @@ export default function PerfilDetall() {
     if (favoritLoading) return;
     setFavoritLoading(true);
     try {
-      const res = await axios.post("http://localhost:4000/api/favorits/toggle", { id_ruta, id_negoci }, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.post("/api/favorits/toggle", { id_ruta, id_negoci }, { headers: { Authorization: `Bearer ${token}` } });
       const newState = res.data.isFavorit;
       setItems((prev) => prev.map((item) => {
         const isTarget = id_ruta ? item.id_ruta === id_ruta : item.id_negoci === id_negoci;
@@ -114,7 +114,7 @@ export default function PerfilDetall() {
       <div className="perfil-detall-header-card">
         <div className="perfil-detall-avatar-container">
           {perfil.foto_perfil ? (
-            <img src={`http://localhost:4000/uploads/${perfil.foto_perfil}`} alt="Perfil" className="perfil-detall-avatar" />
+            <img src={`/uploads/${perfil.foto_perfil}`} alt="Perfil" className="perfil-detall-avatar" />
           ) : (
             <div className="perfil-detall-no-avatar">{perfil.nom?.charAt(0).toUpperCase()}</div>
           )}
@@ -149,7 +149,7 @@ export default function PerfilDetall() {
                     <div className="perfil-detall-card-image-container">
                       {isRuta && item.es_publica === false && <div className="perfil-detall-private-badge">Privada</div>}
                       {fotos.length > 0 ? (
-                        <img src={`http://localhost:4000/uploads/${fotos[0]}`} alt={item.nom} className="perfil-detall-card-image" />
+                        <img src={`/uploads/${fotos[0]}`} alt={item.nom} className="perfil-detall-card-image" />
                       ) : (
                         <img src="/OutTrail-sinfondo.png" alt="Default" className="perfil-detall-card-image" />
                       )}

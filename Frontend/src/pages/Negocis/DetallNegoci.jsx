@@ -86,8 +86,8 @@ export default function DetallNegoci() {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const [resNegoci, resReviews] = await Promise.all([
-        axios.get(`http://localhost:4000/api/negocis/${id}`, { headers }),
-        axios.get(`http://localhost:4000/api/negocis/${id}/reviews`)
+        axios.get(`/api/negocis/${id}`, { headers }),
+        axios.get(`/api/negocis/${id}/reviews`)
       ]);
       setNegoci(resNegoci.data.negoci);
       setPosts(resNegoci.data.posts);
@@ -110,7 +110,7 @@ export default function DetallNegoci() {
     }
     setEnviantReview(true);
     try {
-      await axios.post("http://localhost:4000/api/negocis-reviews", 
+      await axios.post("/api/negocis-reviews", 
         { id_negoci: id, puntuacio, comentari },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -131,7 +131,7 @@ export default function DetallNegoci() {
     setConfirmPostOpen(false); 
     setGlobalLoading(true);
     try {
-      await axios.delete(`http://localhost:4000/api/negocis-reviews/${reviewToDelete}`, {
+      await axios.delete(`/api/negocis-reviews/${reviewToDelete}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       await loadNegoci();
@@ -152,7 +152,7 @@ export default function DetallNegoci() {
     setFavLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/favorits/toggle",
+        "/api/favorits/toggle",
         { id_negoci: parseInt(id) },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -172,7 +172,7 @@ export default function DetallNegoci() {
     setConfirmOpen(false);
     setGlobalLoading(true);
     try {
-      await axios.delete(`http://localhost:4000/api/negocis/${id}`, {
+      await axios.delete(`/api/negocis/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMessageText("Negoci eliminat correctament.");
@@ -190,7 +190,7 @@ export default function DetallNegoci() {
     setConfirmPostOpen(false);
     setGlobalLoading(true);
     try {
-      await axios.delete(`http://localhost:4000/api/posts_negoci/${postToDelete}`, {
+      await axios.delete(`/api/posts_negoci/${postToDelete}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       await loadNegoci();
@@ -282,9 +282,9 @@ export default function DetallNegoci() {
       {fotos.length > 0 && (
         <div className="negoci-detall-slider">
           <img
-            src={`http://localhost:4000/uploads/${fotos[fotoIndex]}`}
+            src={`/uploads/${fotos[fotoIndex]}`}
             className="negoci-detall-slider-img"
-            onClick={() => setSelectedImg(`http://localhost:4000/uploads/${fotos[fotoIndex]}`)}
+            onClick={() => setSelectedImg(`/uploads/${fotos[fotoIndex]}`)}
           />
           {fotos.length > 1 && (
             <>
@@ -400,10 +400,10 @@ export default function DetallNegoci() {
                     {fotosPost.map((f, idx) => (
                       <div key={idx} className="negoci-detall-post-photo-wrapper">
                         <img
-                          src={`http://localhost:4000/uploads/${f}`}
+                          src={`/uploads/${f}`}
                           className="negoci-detall-post-photo"
                           alt="Post"
-                          onClick={() => setSelectedImg(`http://localhost:4000/uploads/${f}`)}
+                          onClick={() => setSelectedImg(`/uploads/${f}`)}
                         />
                       </div>
                     ))}
@@ -478,7 +478,7 @@ export default function DetallNegoci() {
                 <div className="negoci-detall-review-header">
                   <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={() => navigate(`/perfils/${r.id_usuari}`)}>
                     {r.autor?.foto_perfil ? (
-                      <img src={`http://localhost:4000/uploads/${r.autor.foto_perfil}`} className="negoci-detall-review-avatar" />
+                      <img src={`/uploads/${r.autor.foto_perfil}`} className="negoci-detall-review-avatar" />
                     ) : (
                       <div className="negoci-detall-review-avatar-placeholder">{r.autor?.username?.[0]}</div>
                     )}

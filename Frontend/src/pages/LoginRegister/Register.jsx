@@ -35,8 +35,8 @@ export default function Register({ setMode }) {
     setLoadingRegister(true);
     try {
       const normalizedForm = { ...form, email: form.email.toLowerCase() };
-      await axios.post("http://localhost:4000/api/register", normalizedForm);
-      const resLogin = await axios.post("http://localhost:4000/api/login", {
+      await axios.post("/api/register", normalizedForm);
+      const resLogin = await axios.post("/api/login", {
         email: form.email.toLowerCase(),
         password: form.password
       });

@@ -215,21 +215,21 @@ export default function DetallRuta() {
     try {
       const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
       const [resRuta, resReviews] = await Promise.all([
-        axios.get(`http://localhost:4000/api/rutes/${id}`, config),
-        axios.get(`http://localhost:4000/api/rutes/${id}/reviews`)
+        axios.get(`/api/rutes/${id}`, config),
+        axios.get(`/api/rutes/${id}/reviews`)
       ]);
       setRuta(resRuta.data.ruta);
       setParades(resRuta.data.parades || []);
       setReviews(resReviews.data || []);
 
       if (token) {
-        const favRes = await axios.get("http://localhost:4000/api/favorits/me?type=rutes", {
+        const favRes = await axios.get("/api/favorits/me?type=rutes", {
           headers: { Authorization: `Bearer ${token}` }
         });
         const isFav = favRes.data.favorits.some(f => f.id_ruta === Number(id));
         setIsFavorit(isFav);
 
-        const myNegRes = await axios.get("http://localhost:4000/api/negocis?limit=1000", {
+        const myNegRes = await axios.get("/api/negocis?limit=1000", {
           headers: { Authorization: `Bearer ${token}` }
         });
         const myIds = new Set(myNegRes.data.negocis.filter(n => n.id_usuari === user.id).map(n => n.nom + n.latitud + n.longitud));
@@ -259,7 +259,7 @@ export default function DetallRuta() {
 
     setFavLoading(true);
     try {
-      const res = await axios.post("http://localhost:4000/api/favorits/toggle",
+      const res = await axios.post("/api/favorits/toggle",
         { id_ruta: id, type: 'ruta' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -276,7 +276,7 @@ export default function DetallRuta() {
       text: "Estàs segur que vols eliminar aquesta ruta per sempre?",
       onConfirm: async () => {
         try {
-          await axios.delete(`http://localhost:4000/api/rutes/${id}`, {
+          await axios.delete(`/api/rutes/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           if (location.state?.fromMe) {
@@ -301,7 +301,7 @@ export default function DetallRuta() {
 
     setEnviantReview(true);
     try {
-      await axios.post("http://localhost:4000/api/reviews",
+      await axios.post("/api/reviews",
         { id_ruta: id, puntuacio, comentari },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -372,7 +372,7 @@ ${coords.map(c => `      <trkpt lat="${c[1]}" lon="${c[0]}"></trkpt>`).join("\n"
       text: "Segur que vols eliminar aquesta valoració?",
       onConfirm: async () => {
         try {
-          await axios.delete(`http://localhost:4000/api/reviews/${reviewId}`, {
+          await axios.delete(`/api/reviews/${reviewId}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           setConfirm(null);
@@ -433,9 +433,9 @@ ${coords.map(c => `      <trkpt lat="${c[1]}" lon="${c[0]}"></trkpt>`).join("\n"
                     return (
                       <div className="mapa-detall-ruta-slider">
                         <img
-                          src={`http://localhost:4000/uploads/${fotos[fotoIndex]}`}
+                          src={`/uploads/${fotos[fotoIndex]}`}
                           className="mapa-detall-ruta-main-img"
-                          onClick={() => setSelectedImg(`http://localhost:4000/uploads/${fotos[fotoIndex]}`)}
+                          onClick={() => setSelectedImg(`/uploads/${fotos[fotoIndex]}`)}
                         />
                         {fotos.length > 1 && (
                           <>
@@ -555,7 +555,7 @@ ${coords.map(c => `      <trkpt lat="${c[1]}" lon="${c[0]}"></trkpt>`).join("\n"
                       <div className="mapa-detall-ruta-review-header">
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }} onClick={() => navigate(`/perfils/${r.id_usuari}`)}>
                           {r.autor?.foto_perfil ? (
-                            <img src={`http://localhost:4000/uploads/${r.autor.foto_perfil}`} className="mapa-detall-ruta-avatar" />
+                            <img src={`/uploads/${r.autor.foto_perfil}`} className="mapa-detall-ruta-avatar" />
                           ) : (
                             <div className="mapa-detall-ruta-avatar-placeholder">{r.autor?.username?.[0]}</div>
                           )}

@@ -51,7 +51,7 @@ export default function Login({ setMode }) {
     e.preventDefault();
     setLoadingLogin(true);
     try {
-      const res = await axios.post("http://localhost:4000/api/login", {
+      const res = await axios.post("/api/login", {
         email: email.toLowerCase(),
         password
       });

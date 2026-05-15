@@ -155,7 +155,7 @@ function PreviewPopupRuta({ r }) {
   return (
     <div className="map-preview-tooltip">
       <img 
-        src={r.fotos ? `http://localhost:4000/uploads/${r.fotos.split(',')[0]}` : "/OutTrail-sinfondo.png"} 
+        src={r.fotos ? `/uploads/${r.fotos.split(',')[0]}` : "/OutTrail-sinfondo.png"} 
         className="map-preview-img" 
         style={{ objectFit: r.fotos ? "cover" : "contain", background: r.fotos ? "none" : "#f0f0f0" }}
       />
@@ -197,7 +197,7 @@ function PreviewPopupNegoci({ n }) {
   return (
     <div className="map-preview-tooltip">
       <img 
-        src={n.fotos ? `http://localhost:4000/uploads/${n.fotos.split(',')[0]}` : "/OutTrail-sinfondo.png"} 
+        src={n.fotos ? `/uploads/${n.fotos.split(',')[0]}` : "/OutTrail-sinfondo.png"} 
         className="map-preview-img" 
         style={{ objectFit: n.fotos ? "cover" : "contain", background: n.fotos ? "none" : "#f0f0f0" }}
       />
@@ -306,8 +306,8 @@ export default function MapaExplorar() {
     if (!token) return;
     try {
       const [r, n] = await Promise.all([
-        axios.get("http://localhost:4000/api/favorits/me?type=rutes&limit=999", { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get("http://localhost:4000/api/favorits/me?type=negocis&limit=999", { headers: { Authorization: `Bearer ${token}` } })
+        axios.get("/api/favorits/me?type=rutes&limit=999", { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get("/api/favorits/me?type=negocis&limit=999", { headers: { Authorization: `Bearer ${token}` } })
       ]);
       setFavRutes(new Set(r.data.favorits.map(f => Number(f.id_ruta))));
       setFavNegocis(new Set(n.data.favorits.map(f => Number(f.id_negoci))));
@@ -324,11 +324,11 @@ export default function MapaExplorar() {
       const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 
       const [resRutes, resNegocis] = await Promise.all([
-        axios.get("http://localhost:4000/api/rutes-map", {
+        axios.get("/api/rutes-map", {
           ...config,
           params: { dificultat, maxKm: maxKm || 9999, minRating }
         }),
-        axios.get("http://localhost:4000/api/negocis-explora", {
+        axios.get("/api/negocis-explora", {
           params: { tipus: tipusNegoci, minRating: minRatingNegoci }
         })
       ]);
@@ -350,7 +350,7 @@ export default function MapaExplorar() {
       () => { setHasLocationPermission(false); setUserLocation([40.4168, -3.7038]); },
       { enableHighAccuracy: true }
     );
-    axios.get("http://localhost:4000/api/rutes-max-km").then(res => {
+    axios.get("/api/rutes-max-km").then(res => {
       const mk = res.data.maxKm || 100;
       setMaxDistanciaDB(mk);
       if (!sessionStorage.getItem('outtrail_map_state')) setMaxKm(mk);
@@ -414,7 +414,7 @@ export default function MapaExplorar() {
 
     const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
     try {
-      const res = await axios.get(`http://localhost:4000/api/rutes/${r.id_ruta}`, config);
+      const res = await axios.get(`/api/rutes/${r.id_ruta}`, config);
       setSeleccio({ type: 'ruta', data: res.data.ruta });
       setParadesRuta(res.data.parades || []);
       setGeometryRuta(res.data.ruta.geometria?.geojson || null);
@@ -450,7 +450,7 @@ export default function MapaExplorar() {
 
     setFavLoading(prev => new Set(prev).add(`r-${id_ruta}`));
     try {
-      const res = await axios.post("http://localhost:4000/api/favorits/toggle", { id_ruta }, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.post("/api/favorits/toggle", { id_ruta }, { headers: { Authorization: `Bearer ${token}` } });
       setFavRutes(prev => {
         const next = new Set(prev);
         const id = Number(id_ruta);
@@ -475,7 +475,7 @@ export default function MapaExplorar() {
 
     setFavLoading(prev => new Set(prev).add(`n-${id_negoci}`));
     try {
-      const res = await axios.post("http://localhost:4000/api/favorits/toggle", { id_negoci }, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.post("/api/favorits/toggle", { id_negoci }, { headers: { Authorization: `Bearer ${token}` } });
       setFavNegocis(prev => {
         const next = new Set(prev);
         const id = Number(id_negoci);
@@ -649,7 +649,7 @@ export default function MapaExplorar() {
                       setNomésMevesRutes(false);
                       setLoading(true);
                       const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-                      axios.get("http://localhost:4000/api/rutes-map", {
+                      axios.get("/api/rutes-map", {
                         ...config,
                         params: { dificultat: "", maxKm: maxDistanciaDB, minRating: 0 }
                       }).then(res => {
@@ -714,7 +714,7 @@ export default function MapaExplorar() {
                       setNomésMeusNegocis(false);
                       setMinRatingNegoci(0);
                       setLoading(true);
-                      axios.get("http://localhost:4000/api/negocis-explora", {
+                      axios.get("/api/negocis-explora", {
                         params: { tipus: "", minRating: 0 }
                       }).then(res => {
                         setNegocis(res.data);
@@ -737,7 +737,7 @@ export default function MapaExplorar() {
               {seleccio.type === 'ruta' ? (
                 <div>
                   {seleccio.data.fotos ? (
-                    <img src={`http://localhost:4000/uploads/${seleccio.data.fotos.split(',')[0]}`} className="mapa-explorar-detail-img" />
+                    <img src={`/uploads/${seleccio.data.fotos.split(',')[0]}`} className="mapa-explorar-detail-img" />
                   ) : (
                     <img src="/OutTrail-sinfondo.png" className="mapa-explorar-detail-img" style={{ objectFit: "contain", background: "#f0f0f0" }} />
                   )}
@@ -751,7 +751,7 @@ export default function MapaExplorar() {
               ) : (
                 <div>
                   {seleccio.data.fotos ? (
-                    <img src={`http://localhost:4000/uploads/${seleccio.data.fotos.split(',')[0]}`} className="mapa-explorar-detail-img" />
+                    <img src={`/uploads/${seleccio.data.fotos.split(',')[0]}`} className="mapa-explorar-detail-img" />
                   ) : (
                     <img src="/OutTrail-sinfondo.png" className="mapa-explorar-detail-img" style={{ objectFit: "contain", background: "#f0f0f0" }} />
                   )}

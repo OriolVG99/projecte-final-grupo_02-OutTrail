@@ -56,7 +56,7 @@ export default function CrearPost() {
       form.append("contingut", contingut);
       fotos.forEach(f => form.append("fotos", f));
       await axios.post(
-        `http://localhost:4000/api/negocis/${id}/posts`,
+        `/api/negocis/${id}/posts`,
         form,
         { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
       );

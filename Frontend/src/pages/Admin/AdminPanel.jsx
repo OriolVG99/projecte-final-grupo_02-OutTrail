@@ -27,7 +27,7 @@ export default function AdminPanel() {
 
   const loadZones = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/users/zones", {
+      const res = await axios.get("/api/users/zones", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setZones(res.data.zones);
@@ -37,7 +37,7 @@ export default function AdminPanel() {
   const loadUsers = async (customPage = page) => {
     setLoadingUsers(true);
     try {
-      const res = await axios.get("http://localhost:4000/api/admin/users", {
+      const res = await axios.get("/api/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
         params: { search, zona, role: roleFilter, page: customPage, limit: PAGE_SIZE }
       });
@@ -85,7 +85,7 @@ export default function AdminPanel() {
     if (deleting) return;
     setDeleting(true);
     try {
-      await axios.delete(`http://localhost:4000/api/admin/users/${deleteId}`, {
+      await axios.delete(`/api/admin/users/${deleteId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -200,7 +200,7 @@ export default function AdminPanel() {
                     <div className="user-cell">
                       <div className="user-avatar-mini">
                         {u.foto_perfil ? (
-                          <img src={`http://localhost:4000/uploads/${u.foto_perfil}`} alt="" />
+                          <img src={`/uploads/${u.foto_perfil}`} alt="" />
                         ) : (
                           <span>{u.nom.charAt(0)}</span>
                         )}

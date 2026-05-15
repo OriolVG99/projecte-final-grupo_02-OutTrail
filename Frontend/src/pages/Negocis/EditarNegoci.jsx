@@ -37,7 +37,7 @@ function ClickHandler({ setLatLng, onZonaAuto }) {
       const { lat, lng } = e.latlng;
       setLatLng({ lat, lng });
       try {
-        const res = await axios.post("http://localhost:4000/api/reverse-geocode", { lat, lon: lng });
+        const res = await axios.post("/api/reverse-geocode", { lat, lon: lng });
         const zona = res.data.address?.city || res.data.address?.town || res.data.address?.village || "";
         if (zona) onZonaAuto(zona);
       } catch (err) {
@@ -82,7 +82,7 @@ export default function EditarNegoci() {
   useEffect(() => {
     const loadNegoci = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/api/negocis/${id}`);
+        const res = await axios.get(`/api/negocis/${id}`);
         const n = res.data.negoci;
         setNom(n.nom || "");
         setZona(n.zona || "");
@@ -163,7 +163,7 @@ export default function EditarNegoci() {
         form.append("longitud", Number(latLng.lng));
       }
       newFotos.forEach(f => form.append("fotos", f));
-      await axios.put(`http://localhost:4000/api/negocis/${id}`, form, {
+      await axios.put(`/api/negocis/${id}`, form, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
       });
       showMessage("Negoci actualitzat correctament!", "green");
@@ -248,7 +248,7 @@ export default function EditarNegoci() {
                 <div className="editar-negoci-preview-grid">
                   {existingFotos.map((f, idx) => (
                     <div key={idx} className="editar-negoci-preview-item">
-                      <img src={`http://localhost:4000/uploads/${f}`} alt="" className="editar-negoci-preview-img" />
+                      <img src={`/uploads/${f}`} alt="" className="editar-negoci-preview-img" />
                       <button type="button" className="editar-negoci-remove-foto-btn" onClick={() => removeExistingFoto(idx)}>✕</button>
                     </div>
                   ))}

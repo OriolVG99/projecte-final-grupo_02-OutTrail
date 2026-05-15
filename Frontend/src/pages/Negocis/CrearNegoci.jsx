@@ -43,7 +43,7 @@ function ClickHandler({ setLatLng, onZonaAuto }) {
       const { lat, lng } = e.latlng;
       setLatLng({ lat, lng });
       try {
-        const res = await axios.post("http://localhost:4000/api/reverse-geocode", { lat, lon: lng });
+        const res = await axios.post("/api/reverse-geocode", { lat, lon: lng });
         const zona = res.data.address?.city || res.data.address?.town || res.data.address?.village || "";
         if (zona) onZonaAuto(zona);
       } catch (err) {
@@ -150,7 +150,7 @@ export default function CrearNegoci() {
       form.append("latitud", Number(latLng.lat));
       form.append("longitud", Number(latLng.lng));
       for (let f of fotos) form.append("fotos", f);
-      const res = await axios.post("http://localhost:4000/api/negocis", form, {
+      const res = await axios.post("/api/negocis", form, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
       });
       setRedirectId(res.data.id_negoci);

@@ -33,7 +33,7 @@ export default function ExploraNegocis() {
     setLoading(true);
     try {
       const offset = (customPage - 1) * PAGE_SIZE;
-      const res = await axios.get("http://localhost:4000/api/negocis", {
+      const res = await axios.get("/api/negocis", {
         params: { search, zona, tipus, limit: PAGE_SIZE + 1, offset }
       });
       const rows = res.data.negocis || [];
@@ -51,7 +51,7 @@ export default function ExploraNegocis() {
 
   const loadZones = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/negocis/zones");
+      const res = await axios.get("/api/negocis/zones");
       setZones(res.data.zones || []);
     } catch (err) {
       console.error("Error carregant zones", err);
@@ -61,7 +61,7 @@ export default function ExploraNegocis() {
   const loadFavorits = async () => {
     if (!token) return;
     try {
-      const res = await axios.get("http://localhost:4000/api/favorits/me", {
+      const res = await axios.get("/api/favorits/me", {
         headers: { Authorization: `Bearer ${token}` },
         params: { type: "negocis", limit: 999, offset: 0 }
       });
@@ -80,7 +80,7 @@ export default function ExploraNegocis() {
     setFavLoading(true);
     try {
       const res = await axios.post(
-        "http://localhost:4000/api/favorits/toggle",
+        "/api/favorits/toggle",
         { id_negoci },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -184,7 +184,7 @@ export default function ExploraNegocis() {
                 <div key={n.id_negoci} className="negocis-card" onClick={() => navigate(`/negocis/${n.id_negoci}`)}>
                   <div className="negocis-photo-box">
                     {fotos.length > 0 ? (
-                      <img src={`http://localhost:4000/uploads/${fotos[0]}`} className="negocis-photo" alt={n.nom} />
+                      <img src={`/uploads/${fotos[0]}`} className="negocis-photo" alt={n.nom} />
                     ) : (
                       <img src="/OutTrail-sinfondo.png" className="negocis-photo" alt="Sense foto" />
                     )}

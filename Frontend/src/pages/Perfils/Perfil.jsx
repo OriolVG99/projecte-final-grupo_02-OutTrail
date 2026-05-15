@@ -48,7 +48,7 @@ export default function Perfil() {
 
   useEffect(() => {
     if (user) {
-      axios.get("http://localhost:4000/api/me", {
+      axios.get("/api/me", {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then(res => {
@@ -71,7 +71,7 @@ export default function Perfil() {
   const save = async () => {
     try {
       setSaving(true);
-      const res = await axios.put("http://localhost:4000/api/me", form, {
+      const res = await axios.put("/api/me", form, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const u = res.data.user;
@@ -93,14 +93,14 @@ export default function Perfil() {
     if (!file) return;
     const fd = new FormData();
     fd.append("foto", file);
-    const res = await axios.post("http://localhost:4000/api/me/foto", fd, {
+    const res = await axios.post("/api/me/foto", fd, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setForm({ ...form, foto_perfil: res.data.foto_perfil });
   };
 
   const eliminarFoto = async () => {
-    await axios.put("http://localhost:4000/api/me", { ...form, foto_perfil: "" }, {
+    await axios.put("/api/me", { ...form, foto_perfil: "" }, {
       headers: { Authorization: `Bearer ${token}` }
     });
     setForm({ ...form, foto_perfil: "" });
@@ -174,7 +174,7 @@ export default function Perfil() {
   const avatar = form.foto_perfil
     ? (
         <img
-          src={`http://localhost:4000/uploads/${form.foto_perfil}`}
+          src={`/uploads/${form.foto_perfil}`}
           alt="Foto perfil"
           style={{ width: "140px", height: "140px", borderRadius: "50%", objectFit: "cover", marginBottom: "15px", border: "3px solid #004c06", display: "block", marginLeft: "auto", marginRight: "auto" }}
         />
@@ -209,7 +209,7 @@ export default function Perfil() {
     try {
       setSaving(true);
       setConfirmPasswordModal(false);
-      await axios.put("http://localhost:4000/api/me/password", passwordForm, {
+      await axios.put("/api/me/password", passwordForm, {
         headers: { Authorization: `Bearer ${token}` }
       });
       localStorage.removeItem("user");
@@ -228,7 +228,7 @@ export default function Perfil() {
     try {
       setDeleting(true);
       setConfirmDeleteModal(false);
-      await axios.delete("http://localhost:4000/api/me", {
+      await axios.delete("/api/me", {
         headers: { Authorization: `Bearer ${token}` }
       });
       localStorage.removeItem("user");

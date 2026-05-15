@@ -26,7 +26,7 @@ export default function MisNegocis() {
   const loadNegocis = async (customPage = page) => {
     try {
       const offset = (customPage - 1) * PAGE_SIZE;
-      const res = await axios.get("http://localhost:4000/api/me/negocis", {
+      const res = await axios.get("/api/me/negocis", {
         headers: { Authorization: `Bearer ${token}` },
         params: { limit: PAGE_SIZE + 1, offset }
       });
@@ -56,7 +56,7 @@ export default function MisNegocis() {
     setConfirmOpen(false);
     setGlobalLoading(true);
     try {
-      await axios.delete(`http://localhost:4000/api/negocis/${negociToDelete}`, {
+      await axios.delete(`/api/negocis/${negociToDelete}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const isLastOnPage = negocis.length === 1 && page > 1;
@@ -108,7 +108,7 @@ export default function MisNegocis() {
             <div key={n.id_negoci} className="mis-negocis-card">
               <div className="mis-negocis-photo-box">
                 {fotos.length > 0 ? (
-                  <img src={`http://localhost:4000/uploads/${fotos[0]}`} className="mis-negocis-photo" />
+                  <img src={`/uploads/${fotos[0]}`} className="mis-negocis-photo" />
                 ) : (
                   <img src="/OutTrail-sinfondo.png" alt="Sense foto" className="mis-negocis-photo" />
                 )}

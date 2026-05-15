@@ -19,7 +19,7 @@ export default function AdminBusinessRequests() {
 
   const loadRequests = () => {
     axios
-      .get("http://localhost:4000/api/admin/business-requests", {
+      .get("/api/admin/business-requests", {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then((res) => {
@@ -45,7 +45,7 @@ export default function AdminBusinessRequests() {
     setActionText("Acceptant...");
     try {
       await axios.put(
-        `http://localhost:4000/api/admin/business-requests/${id}/accept`,
+        `/api/admin/business-requests/${id}/accept`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -62,7 +62,7 @@ export default function AdminBusinessRequests() {
     setActionText("Denegant...");
     try {
       await axios.put(
-        `http://localhost:4000/api/admin/business-requests/${id}/reject`,
+        `/api/admin/business-requests/${id}/reject`,
         { motiu },
         { headers: { Authorization: `Bearer ${token}` } }
       );

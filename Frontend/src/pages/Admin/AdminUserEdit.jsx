@@ -45,7 +45,7 @@ export default function AdminUserEdit() {
 
   useEffect(() => {
     if (!authLoading) {
-      axios.get(`http://localhost:4000/api/admin/users/${id}`, {
+      axios.get(`/api/admin/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then(res => {
@@ -77,7 +77,7 @@ export default function AdminUserEdit() {
   const save = async () => {
     try {
       setSaving(true);
-      await axios.put(`http://localhost:4000/api/admin/users/${id}`, form, {
+      await axios.put(`/api/admin/users/${id}`, form, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMsg({ 
@@ -102,7 +102,7 @@ export default function AdminUserEdit() {
     try {
       setSaving(true);
       setConfirmPasswordModal(false);
-      await axios.put(`http://localhost:4000/api/admin/users/${id}/password`, { newPassword }, {
+      await axios.put(`/api/admin/users/${id}/password`, { newPassword }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMsg({ 
@@ -127,7 +127,7 @@ export default function AdminUserEdit() {
   const deleteAccount = async () => {
     try {
       setDeleting(true);
-      await axios.delete(`http://localhost:4000/api/admin/users/${id}`, {
+      await axios.delete(`/api/admin/users/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setConfirmDeleteModal(false);

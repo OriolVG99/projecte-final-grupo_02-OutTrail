@@ -34,7 +34,7 @@ export default function Favorits() {
     if (!token) return;
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:4000/api/favorits/me", {
+      const res = await axios.get("/api/favorits/me", {
         headers: { Authorization: `Bearer ${token}` },
         params: { limit: PAGE_SIZE + 1, offset: (customPage - 1) * PAGE_SIZE, type: tab === "rutes" ? "rutes" : "negocis" }
       });
@@ -54,7 +54,7 @@ export default function Favorits() {
     if (toggleLoading) return;
     setToggleLoading(true);
     try {
-      await axios.post("http://localhost:4000/api/favorits/toggle", { id_ruta, id_negoci }, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.post("/api/favorits/toggle", { id_ruta, id_negoci }, { headers: { Authorization: `Bearer ${token}` } });
       const wouldRemain = favorits.filter(f => id_ruta ? f.id_ruta !== id_ruta : f.id_negoci !== id_negoci).length;
       if (wouldRemain === 0 && page > 1) {
         setPage(p => p - 1);
@@ -100,7 +100,7 @@ export default function Favorits() {
                   <div className="favorits-photo-box">
                     <div className="favorits-heart" style={{ opacity: toggleLoading ? 0.6 : 1, pointerEvents: toggleLoading ? "none" : "auto" }} onClick={(e) => toggleFavorit(e, fav.tipus === "ruta" ? item.id_ruta : null, fav.tipus === "negoci" ? item.id_negoci : null)}>❤️</div>
                     {img ? (
-                      <img src={`http://localhost:4000/uploads/${img}`} alt={item.nom} className="favorits-photo" />
+                      <img src={`/uploads/${img}`} alt={item.nom} className="favorits-photo" />
                     ) : (
                       <img src="/OutTrail-sinfondo.png" alt="default" className="favorits-photo" />
                     )}

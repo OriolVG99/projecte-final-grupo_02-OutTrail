@@ -27,7 +27,7 @@ export default function Seguits() {
 
   const loadZones = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/users/zones", {
+      const res = await axios.get("/api/users/zones", {
         headers: { Authorization: `Bearer ${token}` }
       });
       setZones(res.data.zones);
@@ -37,7 +37,7 @@ export default function Seguits() {
   const loadFollowing = async (customPage = page, allowEmpty = true) => {
     setLoadingUsers(true);
     try {
-      const res = await axios.get("http://localhost:4000/api/users/following", {
+      const res = await axios.get("/api/users/following", {
         headers: { Authorization: `Bearer ${token}` },
         params: { search, zona, experiencia, role: roleFilter, page: customPage, limit: PAGE_SIZE }
       });
@@ -101,7 +101,7 @@ export default function Seguits() {
     setActionLoading(id);
     setGlobalLoading(true);
     try {
-      await axios.delete(`http://localhost:4000/api/follow/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axios.delete(`/api/follow/${id}`, { headers: { Authorization: `Bearer ${token}` } });
       await loadFollowing(page);
     } catch (err) {}
     setActionLoading(null);
@@ -156,7 +156,7 @@ export default function Seguits() {
             <div className="seguits-card-left">
               <div className="seguits-avatar">
                 {u.foto_perfil ? (
-                  <img src={`http://localhost:4000/uploads/${u.foto_perfil}`} className="seguits-avatar-img" />
+                  <img src={`/uploads/${u.foto_perfil}`} className="seguits-avatar-img" />
                 ) : (
                   <span className="seguits-avatar-letter">{u.nom.charAt(0).toUpperCase()}</span>
                 )}

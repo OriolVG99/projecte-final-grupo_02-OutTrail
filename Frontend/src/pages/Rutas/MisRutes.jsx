@@ -26,7 +26,7 @@ export default function MisRutes() {
   const loadRutes = async (customPage = page) => {
     try {
       const offset = (customPage - 1) * PAGE_SIZE;
-      const res = await axios.get(`http://localhost:4000/api/rutes/user/${user.id}`, {
+      const res = await axios.get(`/api/rutes/user/${user.id}`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { limit: PAGE_SIZE + 1, offset }
       });
@@ -56,7 +56,7 @@ export default function MisRutes() {
     setConfirmOpen(false);
     setGlobalLoading(true);
     try {
-      await axios.delete(`http://localhost:4000/api/rutes/${rutaToDelete}`, {
+      await axios.delete(`/api/rutes/${rutaToDelete}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const isLastOnPage = rutes.length === 1 && page > 1;
@@ -113,7 +113,7 @@ export default function MisRutes() {
             <div key={r.id_ruta} className="mis-rutes-card">
               <div className="mis-rutes-photo-box">
                 {fotos.length > 0 ? (
-                  <img src={`http://localhost:4000/uploads/${fotos[0]}`} className="mis-rutes-photo" />
+                  <img src={`/uploads/${fotos[0]}`} className="mis-rutes-photo" />
                 ) : (
                   <img src="/OutTrail-sinfondo.png" alt="Sense foto" className="mis-rutes-photo" />
                 )}
