@@ -7,22 +7,22 @@
       "config": { "distDir": "dist" }
     },
     {
-      "src": "Backend/package.json",
+      "src": "api/index.js",
       "use": "@vercel/node"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "Backend/src/index.js"
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
     },
     {
-      "src": "/uploads/(.*)",
-      "dest": "Backend/src/uploads/$1"
+      "source": "/uploads/(.*)",
+      "destination": "/Backend/src/uploads/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "Frontend/$1",
+      "source": "/(.*)",
+      "destination": "/Frontend/$1",
       "check": true
     },
     {
@@ -30,7 +30,7 @@
     },
     {
       "src": "/.*",
-      "dest": "Frontend/index.html"
+      "destination": "/Frontend/index.html"
     }
   ]
 }
