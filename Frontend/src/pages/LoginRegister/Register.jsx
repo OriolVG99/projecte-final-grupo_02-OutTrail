@@ -43,8 +43,10 @@ export default function Register({ setMode }) {
       login(resLogin.data.user, resLogin.data.token);
       navigate("/");
     } catch (err) {
-      setModalError(err.response?.data?.error || "Error creant el compte");
+      const errorMsg = err.response?.data?.error;
+      setModalError(typeof errorMsg === 'string' ? errorMsg : "Error creant el compte");
     } finally {
+
       setLoadingRegister(false);
     }
   };

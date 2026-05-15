@@ -30,6 +30,11 @@ try {
 }
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Backend escoltant al port ${PORT}`);
-});
+
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Backend escoltant al port ${PORT}`);
+  });
+}
+
+export default app;

@@ -68,8 +68,10 @@ export default function Login({ setMode }) {
       const from = location.state?.from || "/";
       navigate(from, { replace: true });
     } catch (err) {
-      setModalError(err.response?.data?.error || "Error iniciant sessió");
+      const errorMsg = err.response?.data?.error;
+      setModalError(typeof errorMsg === 'string' ? errorMsg : "Error iniciant sessió");
     } finally {
+
       setLoadingLogin(false);
     }
   };
