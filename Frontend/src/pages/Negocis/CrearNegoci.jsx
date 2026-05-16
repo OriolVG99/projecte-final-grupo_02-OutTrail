@@ -101,8 +101,26 @@ export default function CrearNegoci() {
   const onFotosChange = (e) => {
     const files = Array.from(e.target.files);
     if (!files.length) return;
-    setFotos(prev => [...prev, ...files]);
-    setPreviewUrls(prev => [...prev, ...files.map(f => URL.createObjectURL(f))]);
+
+    const validFiles = [];
+    let hasTooLarge = false;
+
+    for (const file of files) {
+      if (file.size > 4 * 1024 * 1024) {
+        hasTooLarge = true;
+      } else {
+        validFiles.push(file);
+      }
+    }
+
+    if (hasTooLarge) {
+      showMessage("Algunes imatges són massa grans i s'han descartat. El límit per imatge és 4MB.");
+    }
+
+    if (validFiles.length > 0) {
+      setFotos(prev => [...prev, ...validFiles]);
+      setPreviewUrls(prev => [...prev, ...validFiles.map(f => URL.createObjectURL(f))]);
+    }
   };
 
   const removeFoto = (index) => {
@@ -149,6 +167,13 @@ export default function CrearNegoci() {
       form.append("descripcio", descripcio);
       form.append("latitud", Number(latLng.lat));
       form.append("longitud", Number(latLng.lng));
+      const totalSize = fotos.reduce((acc, f) => acc + f.size, 0);
+      if (totalSize > 4.5 * 1024 * 1024) {
+        showMessage("El conjunt d'imatges és massa gran per al servidor (més de 4.5MB total). Si us plau, redueix el nombre o qualitat de les fotos.");
+        setLoading(false);
+        return;
+      }
+
       for (let f of fotos) form.append("fotos", f);
       const res = await axios.post("/api/negocis", form, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }

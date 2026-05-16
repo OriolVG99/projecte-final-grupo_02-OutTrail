@@ -296,9 +296,32 @@ export default function CrearRuta() {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    setImageFiles(prev => [...prev, ...files]);
-    const newPreviews = files.map(file => URL.createObjectURL(file));
-    setPreviews(prev => [...prev, ...newPreviews]);
+    const validFiles = [];
+    let hasTooLarge = false;
+
+    for (const file of files) {
+      if (file.size > 4 * 1024 * 1024) {
+        hasTooLarge = true;
+      } else {
+        validFiles.push(file);
+      }
+    }
+
+    if (hasTooLarge) {
+      setMsg({ 
+        title: "Atenció", 
+        text: "Algunes imatges són massa grans i s'han descartat. El límit per imatge és 4MB.", 
+        color: "yellow",
+        buttonText: "D'acord",
+        onButtonClick: () => setMsg(null)
+      });
+    }
+
+    if (validFiles.length > 0) {
+      setImageFiles(prev => [...prev, ...validFiles]);
+      const newPreviews = validFiles.map(file => URL.createObjectURL(file));
+      setPreviews(prev => [...prev, ...newPreviews]);
+    }
   };
 
   const removeImage = (index) => {
@@ -350,6 +373,17 @@ export default function CrearRuta() {
     formData.append("distancia_km", distancia);
     formData.append("punts", JSON.stringify(punts));
     if (geometry) formData.append("geojson", JSON.stringify(geometry));
+    const totalSize = imageFiles.reduce((acc, f) => acc + f.size, 0);
+    if (totalSize > 4.5 * 1024 * 1024) {
+      setMsg({ 
+        title: "Error", 
+        text: "El conjunt d'imatges és massa gran per al servidor (més de 4.5MB total). Si us plau, redueix el nombre o qualitat de les fotos.", 
+        color: "red" 
+      });
+      setSaving(false);
+      return;
+    }
+
     imageFiles.forEach(file => {
       formData.append("fotos", file);
     });

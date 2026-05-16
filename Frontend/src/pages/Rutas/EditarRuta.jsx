@@ -360,9 +360,32 @@ export default function EditarRuta() {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    setImageFiles(prev => [...prev, ...files]);
-    const newPreviews = files.map(file => URL.createObjectURL(file));
-    setPreviews(prev => [...prev, ...newPreviews]);
+    const validFiles = [];
+    let hasTooLarge = false;
+
+    for (const file of files) {
+      if (file.size > 4 * 1024 * 1024) {
+        hasTooLarge = true;
+      } else {
+        validFiles.push(file);
+      }
+    }
+
+    if (hasTooLarge) {
+      setModal({ 
+        title: "Atenció", 
+        text: "Algunes imatges són massa grans i s'han descartat. El límit per imatge és 4MB.", 
+        color: "yellow",
+        buttonText: "D'acord",
+        onButtonClick: () => setModal(null)
+      });
+    }
+
+    if (validFiles.length > 0) {
+      setImageFiles(prev => [...prev, ...validFiles]);
+      const newPreviews = validFiles.map(file => URL.createObjectURL(file));
+      setPreviews(prev => [...prev, ...newPreviews]);
+    }
   };
 
   const removeNewImage = (index) => {
@@ -423,6 +446,19 @@ export default function EditarRuta() {
     formData.append("punts", JSON.stringify(punts.map(p => ({ nom: p.nom, latitud: p.lat, longitud: p.lng, tipus: p.tipus }))));
     formData.append("existingFotos", JSON.stringify(existingFotos));
     if (geometry) formData.append("geojson", JSON.stringify(geometry));
+    const totalSize = imageFiles.reduce((acc, f) => acc + f.size, 0);
+    if (totalSize > 4.5 * 1024 * 1024) {
+      setModal({ 
+        title: "Error", 
+        text: "El conjunt de noves imatges és massa gran per al servidor (més de 4.5MB total). Si us plau, redueix el nombre o qualitat de les fotos.", 
+        color: "red",
+        buttonText: "D'acord",
+        onButtonClick: () => setModal(null)
+      });
+      setSaving(false);
+      return;
+    }
+
     imageFiles.forEach(file => formData.append("fotos", file));
 
     try {

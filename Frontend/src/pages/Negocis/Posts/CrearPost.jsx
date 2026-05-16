@@ -26,9 +26,24 @@ export default function CrearPost() {
     if (validImages.length !== files.length) {
       setMsg({ title: "Atenció", text: "Només es permeten fitxers d'imatge (jpg, png, etc.)", color: "yellow" });
     }
-    if (validImages.length === 0) return;
-    setFotos(prev => [...prev, ...validImages]);
-    setPreviewUrls(prev => [...prev, ...validImages.map(f => URL.createObjectURL(f))]);
+    
+    const sizeFiltered = [];
+    let hasTooLarge = false;
+    for (const f of validImages) {
+      if (f.size > 4 * 1024 * 1024) {
+        hasTooLarge = true;
+      } else {
+        sizeFiltered.push(f);
+      }
+    }
+
+    if (hasTooLarge) {
+      setMsg({ title: "Atenció", text: "Algunes imatges són massa grans i s'han descartat. El límit per imatge és 4MB.", color: "yellow" });
+    }
+
+    if (sizeFiltered.length === 0) return;
+    setFotos(prev => [...prev, ...sizeFiltered]);
+    setPreviewUrls(prev => [...prev, ...sizeFiltered.map(f => URL.createObjectURL(f))]);
   };
 
   const removeFoto = (index) => {
@@ -54,6 +69,17 @@ export default function CrearPost() {
       const form = new FormData();
       form.append("titol", titol);
       form.append("contingut", contingut);
+      const totalSize = fotos.reduce((acc, f) => acc + f.size, 0);
+      if (totalSize > 4.5 * 1024 * 1024) {
+        setMsg({ 
+          title: "Error", 
+          text: "El conjunt d'imatges és massa gran per al servidor (més de 4.5MB total). Si us plau, redueix el nombre o qualitat de les fotos.", 
+          color: "red" 
+        });
+        setLoading(false);
+        return;
+      }
+
       fotos.forEach(f => form.append("fotos", f));
       await axios.post(
         `/api/negocis/${id}/posts`,
