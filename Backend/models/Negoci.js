@@ -12,5 +12,12 @@ export const Negoci = sequelize.define("negocis", {
   latitud: DataTypes.FLOAT,
   longitud: DataTypes.FLOAT,
   fotos: DataTypes.TEXT,
-  valoracio_mitjana: { type: DataTypes.DECIMAL(3, 2), defaultValue: 0 }
+  valoracio_mitjana: { 
+    type: DataTypes.DECIMAL(3, 2), 
+    defaultValue: 0,
+    get() {
+      const value = this.getDataValue('valoracio_mitjana');
+      return value === null ? 0 : parseFloat(value);
+    }
+  }
 }, { timestamps: false });

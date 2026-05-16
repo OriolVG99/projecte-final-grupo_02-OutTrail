@@ -11,6 +11,13 @@ export const Ruta = sequelize.define("rutes", {
   distancia_km: DataTypes.FLOAT,
   dificultat: DataTypes.STRING,
   fotos: DataTypes.TEXT,
-  valoracio_mitjana: { type: DataTypes.DECIMAL(3, 2), defaultValue: 0 },
+  valoracio_mitjana: { 
+    type: DataTypes.DECIMAL(3, 2), 
+    defaultValue: 0,
+    get() {
+      const value = this.getDataValue('valoracio_mitjana');
+      return value === null ? 0 : parseFloat(value);
+    }
+  },
   es_publica: { type: DataTypes.BOOLEAN, defaultValue: true }
 }, { timestamps: false });
