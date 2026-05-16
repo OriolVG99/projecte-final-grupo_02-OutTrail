@@ -282,9 +282,12 @@ export default function DetallNegoci() {
       {fotos.length > 0 && (
         <div className="negoci-detall-slider">
           <img
-            src={fotos[fotoIndex]?.startsWith('http') ? fotos[fotoIndex] : `/uploads/${fotos[fotoIndex]}`}
+            src={fotos[fotoIndex]?.includes('cloudinary.com') || fotos[fotoIndex]?.startsWith('http') ? fotos[fotoIndex] : `/uploads/${fotos[fotoIndex]}`}
             className="negoci-detall-slider-img"
-            onClick={() => setSelectedImg(`/uploads/${fotos[fotoIndex]}`)}
+            onClick={() => {
+              const img = fotos[fotoIndex];
+              setSelectedImg(img?.includes('cloudinary.com') || img?.startsWith('http') ? img : `/uploads/${img}`);
+            }}
           />
           {fotos.length > 1 && (
             <>
@@ -400,10 +403,10 @@ export default function DetallNegoci() {
                     {fotosPost.map((f, idx) => (
                       <div key={idx} className="negoci-detall-post-photo-wrapper">
                         <img
-                          src={f.startsWith('http') ? f : `/uploads/${f}`}
+                          src={f.includes('cloudinary.com') || f.startsWith('http') ? f : `/uploads/${f}`}
                           className="negoci-detall-post-photo"
                           alt="Post"
-                          onClick={() => setSelectedImg(f.startsWith('http') ? f : `/uploads/${f}`)}
+                          onClick={() => setSelectedImg(f.includes('cloudinary.com') || f.startsWith('http') ? f : `/uploads/${f}`)}
                         />
                       </div>
                     ))}
