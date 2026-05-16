@@ -1185,7 +1185,7 @@ router.get('/rutes-explora', async (req, res) => {
     if (distanciaMax) whereCondition.distancia_km = { [Op.lte]: Number(distanciaMax) };
 
     const rutes = await Ruta.findAll({
-      attributes: ['id_ruta', 'nom', 'zona', 'dificultat', 'distancia_km', 'fotos', 'id_usuari'],
+      attributes: ['id_ruta', 'nom', 'zona', 'dificultat', 'distancia_km', 'fotos', 'id_usuari', 'valoracio_mitjana'],
       include: [{
         model: Usuari,
         as: 'autor',
