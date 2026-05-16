@@ -248,7 +248,7 @@ export default function EditarNegoci() {
                 <div className="editar-negoci-preview-grid">
                   {existingFotos.map((f, idx) => (
                     <div key={idx} className="editar-negoci-preview-item">
-                      <img src={`/uploads/${f}`} alt="" className="editar-negoci-preview-img" />
+                      <img src={f?.startsWith('http') ? f : `/uploads/${f}`} alt="" className="editar-negoci-preview-img" />
                       <button type="button" className="editar-negoci-remove-foto-btn" onClick={() => removeExistingFoto(idx)}>✕</button>
                     </div>
                   ))}

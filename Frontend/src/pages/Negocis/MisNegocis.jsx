@@ -108,7 +108,7 @@ export default function MisNegocis() {
             <div key={n.id_negoci} className="mis-negocis-card">
               <div className="mis-negocis-photo-box">
                 {fotos.length > 0 ? (
-                  <img src={`/uploads/${fotos[0]}`} className="mis-negocis-photo" />
+                  <img src={fotos[0]?.startsWith('http') ? fotos[0] : `/uploads/${fotos[0]}`} className="mis-negocis-photo" />
                 ) : (
                   <img src="/OutTrail-sinfondo.png" alt="Sense foto" className="mis-negocis-photo" />
                 )}

@@ -105,7 +105,7 @@ export default function EditarPost() {
             <div className="editar-post-preview-grid">
               {existingFotos.map((f, idx) => (
                 <div key={idx} className="editar-post-preview-item">
-                  <img src={`/uploads/${f}`} className="editar-post-preview-img" />
+                  <img src={f?.startsWith('http') ? f : `/uploads/${f}`} className="editar-post-preview-img" />
                   <button type="button" className="editar-post-remove-foto-btn" onClick={() => removeExistingFoto(idx)}>✕</button>
                 </div>
               ))}

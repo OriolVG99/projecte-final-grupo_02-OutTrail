@@ -134,6 +134,11 @@
   z-index: 2;
 }
 
+.mapa-detall-ruta-slider-btn-left:hover, .mapa-detall-ruta-slider-btn-left:active,
+.mapa-detall-ruta-slider-btn-right:hover, .mapa-detall-ruta-slider-btn-right:active {
+  transform: translateY(-50%) !important;
+}
+
 .mapa-detall-ruta-lightbox-overlay {
   position: fixed;
   top: 0;

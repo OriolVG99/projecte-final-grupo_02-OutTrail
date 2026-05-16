@@ -146,6 +146,11 @@
   cursor: pointer;
 }
 
+.negoci-detall-slider-btn-left:hover, .negoci-detall-slider-btn-left:active,
+.negoci-detall-slider-btn-right:hover, .negoci-detall-slider-btn-right:active {
+  transform: translateY(-50%) !important;
+}
+
 .negoci-detall-info-card {
   background: white;
   padding: 20px;

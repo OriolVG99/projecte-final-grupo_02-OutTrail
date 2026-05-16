@@ -103,7 +103,7 @@ export default function DetallNegoci() {
   const enviarReview = async (e) => {
     e.preventDefault();
     if (!token) return navigate("/auth");
-    if (String(negoci.id_usuari) === String(user.id)) {
+    if (String(negoci.id_usuari) === String(user.id) && user.role !== 3) {
       setMessageText("No pots valorar el teu propi negoci.");
       setMessageOpen(true);
       return;
