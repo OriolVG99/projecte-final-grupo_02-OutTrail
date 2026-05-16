@@ -42,17 +42,15 @@ export default function Header() {
         </button>
       )}
 
-      <nav style={nav} className={`app-header-nav ${user && isMobileMenuOpen ? 'open' : ''} ${!user ? 'non-auth-nav' : ''}`}>
-        <div style={navHover("mapa", "/explorar")} onMouseEnter={() => setHoverItem("mapa")} onMouseLeave={() => setHoverItem(null)} onClick={() => { navigate("/explorar"); setIsMobileMenuOpen(false); }}>Explorar</div>
-        {user && (
-          <>
-            <div style={navHover("rutes", "/rutes")} onMouseEnter={() => setHoverItem("rutes")} onMouseLeave={() => setHoverItem(null)} onClick={() => { navigate("/rutes"); setIsMobileMenuOpen(false); }}>Rutes</div>
-            <div style={navHover("negocis", "/negocis")} onMouseEnter={() => setHoverItem("negocis")} onMouseLeave={() => setHoverItem(null)} onClick={() => { navigate("/negocis"); setIsMobileMenuOpen(false); }}>Negocis</div>
-            <div style={navHover("perfils", "/perfils")} onMouseEnter={() => setHoverItem("perfils")} onMouseLeave={() => setHoverItem(null)} onClick={() => { navigate("/perfils"); setIsMobileMenuOpen(false); }}>Perfils</div>
-            <div style={navHover("favorits", "/favorits")} onMouseEnter={() => setHoverItem("favorits")} onMouseLeave={() => setHoverItem(null)} onClick={() => { navigate("/favorits"); setIsMobileMenuOpen(false); }}>Favorits</div>
-          </>
-        )}
-      </nav>
+      {user && (
+        <nav style={nav} className={`app-header-nav ${isMobileMenuOpen ? 'open' : ''}`}>
+          <div style={navHover("mapa", "/explorar")} onMouseEnter={() => setHoverItem("mapa")} onMouseLeave={() => setHoverItem(null)} onClick={() => { navigate("/explorar"); setIsMobileMenuOpen(false); }}>Explorar</div>
+          <div style={navHover("rutes", "/rutes")} onMouseEnter={() => setHoverItem("rutes")} onMouseLeave={() => setHoverItem(null)} onClick={() => { navigate("/rutes"); setIsMobileMenuOpen(false); }}>Rutes</div>
+          <div style={navHover("negocis", "/negocis")} onMouseEnter={() => setHoverItem("negocis")} onMouseLeave={() => setHoverItem(null)} onClick={() => { navigate("/negocis"); setIsMobileMenuOpen(false); }}>Negocis</div>
+          <div style={navHover("perfils", "/perfils")} onMouseEnter={() => setHoverItem("perfils")} onMouseLeave={() => setHoverItem(null)} onClick={() => { navigate("/perfils"); setIsMobileMenuOpen(false); }}>Perfils</div>
+          <div style={navHover("favorits", "/favorits")} onMouseEnter={() => setHoverItem("favorits")} onMouseLeave={() => setHoverItem(null)} onClick={() => { navigate("/favorits"); setIsMobileMenuOpen(false); }}>Favorits</div>
+        </nav>
+      )}
 
       {user ? (
         <div style={{ display: "flex", gap: "15px", alignItems: "center", ...lato }} className={`app-header-user-actions ${isMobileMenuOpen ? 'open' : ''}`}>
@@ -60,7 +58,8 @@ export default function Header() {
           <button className="btn-red" style={btnLogout} onClick={() => setShowLogoutConfirm(true)}>Logout</button>
         </div>
       ) : (
-        <div className="app-header-login">
+        <div className="app-header-login" style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          <button style={{ ...btn, background: "rgba(255,255,255,0.2)", color: "white" }} onClick={() => navigate("/explorar")}>Explorar</button>
           <button style={btnLogin} onClick={() => navigate("/auth")}>Iniciar sessió</button>
         </div>
       )}
