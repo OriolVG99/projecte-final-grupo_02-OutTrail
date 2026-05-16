@@ -376,9 +376,9 @@ export default function CrearRuta() {
     const totalSize = imageFiles.reduce((acc, f) => acc + f.size, 0);
     if (totalSize > 4.5 * 1024 * 1024) {
       setMsg({ 
-        title: "Error", 
+        title: "Atenció", 
         text: "El conjunt d'imatges és massa gran per al servidor (més de 4.5MB total). Si us plau, redueix el nombre o qualitat de les fotos.", 
-        color: "red" 
+        color: "yellow" 
       });
       setSaving(false);
       return;

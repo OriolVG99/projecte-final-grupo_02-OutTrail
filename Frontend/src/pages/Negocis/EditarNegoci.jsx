@@ -116,7 +116,7 @@ export default function EditarNegoci() {
     }
 
     if (hasTooLarge) {
-      showMessage("Algunes imatges són massa grans i s'han descartat. El límit per imatge és 4MB.");
+      showMessage("Algunes imatges són massa grans i s'han descartat. El límit per imatge és 4MB.", "yellow");
     }
 
     if (validFiles.length > 0) {
@@ -182,7 +182,7 @@ export default function EditarNegoci() {
       }
       const totalSize = newFotos.reduce((acc, f) => acc + f.size, 0);
       if (totalSize > 4.5 * 1024 * 1024) {
-        showMessage("El conjunt de noves imatges és massa gran per al servidor (més de 4.5MB total). Si us plau, redueix el nombre o qualitat de les fotos.");
+        showMessage("El conjunt de noves imatges és massa gran per al servidor (més de 4.5MB total). Si us plau, redueix el nombre o qualitat de les fotos.", "yellow");
         setGlobalLoading(false);
         return;
       }

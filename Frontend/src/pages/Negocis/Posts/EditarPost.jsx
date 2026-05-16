@@ -96,9 +96,9 @@ export default function EditarPost() {
       const totalSize = newFotos.reduce((acc, f) => acc + f.size, 0);
       if (totalSize > 4.5 * 1024 * 1024) {
         setMsg({ 
-          title: "Error", 
+          title: "Atenció", 
           text: "El conjunt de noves imatges és massa gran per al servidor (més de 4.5MB total). Si us plau, redueix el nombre o qualitat de les fotos.", 
-          color: "red" 
+          color: "yellow" 
         });
         setGlobalLoading(false);
         return;
