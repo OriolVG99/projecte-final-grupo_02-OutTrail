@@ -157,7 +157,7 @@ export default function Perfils() {
             <div className="card-left">
               <div className="avatar">
                 {u.foto_perfil ? (
-                  <img src={`/uploads/${u.foto_perfil}`} className="avatar-img" />
+                  <img src={u.foto_perfil?.startsWith('http') ? u.foto_perfil : `/uploads/${u.foto_perfil}`} className="avatar-img" />
                 ) : (
                   <span className="avatar-letter">{u.nom.charAt(0).toUpperCase()}</span>
                 )}

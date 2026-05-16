@@ -294,7 +294,7 @@ export default function DetallRuta() {
   const enviarReview = async (e) => {
     e.preventDefault();
     if (!token) return;
-    if (String(ruta.id_usuari) === String(user.id)) {
+    if (String(ruta.id_usuari) === String(user.id) && user.role !== 3) {
       setMsg({ title: "Error", text: "No pots valorar la teva pròpia ruta.", color: "red" });
       return;
     }

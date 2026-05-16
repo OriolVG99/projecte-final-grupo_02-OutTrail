@@ -36,13 +36,11 @@ export default function Header() {
         <img src="/OutTrailBlanco-sinfondo.png" alt="OutTrail" style={logoImg} />
       </div>
       
-      {user && (
-        <button className="mobile-burger-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-          {isMobileMenuOpen ? "✕" : "☰"}
-        </button>
-      )}
+      <button className="mobile-burger-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+        {isMobileMenuOpen ? "✕" : "☰"}
+      </button>
 
-      <nav style={nav} className={`app-header-nav ${user && isMobileMenuOpen ? 'open' : ''}`}>
+      <nav style={nav} className={`app-header-nav ${isMobileMenuOpen ? 'open' : ''}`}>
         <div style={navHover("mapa", "/explorar")} onMouseEnter={() => setHoverItem("mapa")} onMouseLeave={() => setHoverItem(null)} onClick={() => { navigate("/explorar"); setIsMobileMenuOpen(false); }}>Explorar</div>
         {user && (
           <>

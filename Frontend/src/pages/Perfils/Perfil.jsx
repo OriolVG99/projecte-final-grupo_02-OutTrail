@@ -18,6 +18,7 @@ export default function Perfil() {
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const [confirmLogoutModal, setConfirmLogoutModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [uploadingFoto, setUploadingFoto] = useState(false);
 
   const [form, setForm] = useState({
     nom: "",
@@ -91,12 +92,26 @@ export default function Perfil() {
   const uploadFoto = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const fd = new FormData();
-    fd.append("foto", file);
-    const res = await axios.post("/api/me/foto", fd, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    setForm({ ...form, foto_perfil: res.data.foto_perfil });
+
+    if (file.size > 4 * 1024 * 1024) {
+      setMsg({ title: "Error", text: "La imatge és massa gran. El límit màxim és 4MB.", color: "red" });
+      return;
+    }
+
+    setUploadingFoto(true);
+    try {
+      const fd = new FormData();
+      fd.append("foto", file);
+      const res = await axios.post("/api/me/foto", fd, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setForm({ ...form, foto_perfil: res.data.foto_perfil });
+    } catch (err) {
+      setMsg({ title: "Error", text: "Error pujant la imatge (Potser és massa gran).", color: "red" });
+    } finally {
+      setUploadingFoto(false);
+      e.target.value = null; // reset input
+    }
   };
 
   const eliminarFoto = async () => {
@@ -280,9 +295,9 @@ export default function Perfil() {
       <div style={{ marginBottom: "30px" }}>
         {avatar}
         <div style={{ display: "flex", justifyContent: "center", gap: "15px", marginTop: "10px" }}>
-          <label style={{ background: "#004c06", color: "white", padding: "8px 16px", borderRadius: "20px", cursor: "pointer", fontSize: "13px", fontWeight: "bold" }}>
-            Canviar foto
-            <input type="file" accept="image/*" onChange={uploadFoto} style={{ display: "none" }} />
+          <label style={{ background: uploadingFoto ? "#666" : "#004c06", color: "white", padding: "8px 16px", borderRadius: "20px", cursor: uploadingFoto ? "not-allowed" : "pointer", fontSize: "13px", fontWeight: "bold" }}>
+            {uploadingFoto ? "Pujant..." : "Canviar foto"}
+            <input type="file" accept="image/*" onChange={uploadFoto} style={{ display: "none" }} disabled={uploadingFoto} />
           </label>
           {form.foto_perfil && (
             <button onClick={eliminarFoto} style={{ background: "none", color: "#b01a00", border: "none", cursor: "pointer", fontSize: "13px", fontWeight: "bold", textDecoration: "underline" }}>

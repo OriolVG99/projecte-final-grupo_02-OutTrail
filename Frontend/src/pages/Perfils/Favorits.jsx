@@ -100,7 +100,7 @@ export default function Favorits() {
                   <div className="favorits-photo-box">
                     <div className="favorits-heart" style={{ opacity: toggleLoading ? 0.6 : 1, pointerEvents: toggleLoading ? "none" : "auto" }} onClick={(e) => toggleFavorit(e, fav.tipus === "ruta" ? item.id_ruta : null, fav.tipus === "negoci" ? item.id_negoci : null)}>❤️</div>
                     {img ? (
-                      <img src={`/uploads/${img}`} alt={item.nom} className="favorits-photo" />
+                      <img src={img?.startsWith('http') ? img : `/uploads/${img}`} alt={item.nom} className="favorits-photo" />
                     ) : (
                       <img src="/OutTrail-sinfondo.png" alt="default" className="favorits-photo" />
                     )}

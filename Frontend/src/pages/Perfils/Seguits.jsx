@@ -156,7 +156,7 @@ export default function Seguits() {
             <div className="seguits-card-left">
               <div className="seguits-avatar">
                 {u.foto_perfil ? (
-                  <img src={`/uploads/${u.foto_perfil}`} className="seguits-avatar-img" />
+                  <img src={u.foto_perfil?.startsWith('http') ? u.foto_perfil : `/uploads/${u.foto_perfil}`} className="seguits-avatar-img" />
                 ) : (
                   <span className="seguits-avatar-letter">{u.nom.charAt(0).toUpperCase()}</span>
                 )}

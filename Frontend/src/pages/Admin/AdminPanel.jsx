@@ -200,7 +200,7 @@ export default function AdminPanel() {
                     <div className="user-cell">
                       <div className="user-avatar-mini">
                         {u.foto_perfil ? (
-                          <img src={`/uploads/${u.foto_perfil}`} alt="" />
+                          <img src={u.foto_perfil?.startsWith('http') ? u.foto_perfil : `/uploads/${u.foto_perfil}`} alt="" />
                         ) : (
                           <span>{u.nom.charAt(0)}</span>
                         )}
