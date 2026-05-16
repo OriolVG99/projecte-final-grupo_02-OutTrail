@@ -44,6 +44,34 @@ router.get('/ping', (req, res) => {
   res.json({ message: 'OutTrail API OK' });
 });
 
+// Proxy para ORS - evita el CORS del frontend
+router.post('/ors-directions', async (req, res) => {
+  try {
+    const { coordinates } = req.body;
+    if (!coordinates || coordinates.length < 2) {
+      return res.status(400).json({ error: 'Se necesitan al menos 2 coordenadas' });
+    }
+
+    const orsRes = await fetch(
+      'https://api.openrouteservice.org/v2/directions/foot-hiking/geojson',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: process.env.ORS_API_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ coordinates })
+      }
+    );
+
+    const data = await orsRes.json();
+    res.status(orsRes.status).json(data);
+  } catch (err) {
+    res.status(500).json({ error: 'Error al contactar ORS' });
+  }
+});
+
+
 router.post('/register', async (req, res) => {
   try {
     let { nom, cognoms, username, email, password } = req.body;

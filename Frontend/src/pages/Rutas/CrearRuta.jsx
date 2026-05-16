@@ -240,9 +240,9 @@ export default function CrearRuta() {
     const timeout = setTimeout(async () => {
       try {
         const coords = punts.map(p => [p.lng, p.lat]);
-        const res = await fetch("https://api.openrouteservice.org/v2/directions/foot-hiking/geojson", {
+        const res = await fetch("/api/ors-directions", {
           method: "POST",
-          headers: { "Authorization": ORS_API_KEY, "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ coordinates: coords })
         });
         const data = await res.json();
