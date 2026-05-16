@@ -266,6 +266,9 @@ router.delete('/me', authMiddleware, async (req, res) => {
 
 router.post('/me/foto', authMiddleware, upload.single('foto'), async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No s'ha rebut cap fitxer" });
+    }
     const filename = req.file.path;
 
     await Usuari.update(
@@ -276,8 +279,8 @@ router.post('/me/foto', authMiddleware, upload.single('foto'), async (req, res) 
     res.json({ ok: true, foto_perfil: filename });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error pujant foto' });
+    console.error('ERROR PUJANT FOTO PERFIL:', err);
+    res.status(500).json({ error: 'Error pujant foto: ' + err.message });
   }
 });
 
