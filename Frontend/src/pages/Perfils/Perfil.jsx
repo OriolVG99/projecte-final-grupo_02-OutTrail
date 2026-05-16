@@ -174,7 +174,7 @@ export default function Perfil() {
   const avatar = form.foto_perfil
     ? (
         <img
-          src={`/uploads/${form.foto_perfil}`}
+          src={form.foto_perfil?.startsWith('http') ? form.foto_perfil : `/uploads/${form.foto_perfil}`}
           alt="Foto perfil"
           style={{ width: "140px", height: "140px", borderRadius: "50%", objectFit: "cover", marginBottom: "15px", border: "3px solid #004c06", display: "block", marginLeft: "auto", marginRight: "auto" }}
         />

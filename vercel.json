@@ -17,10 +17,6 @@
       "dest": "/api/index.js"
     },
     {
-      "src": "/uploads/(.*)",
-      "dest": "/Backend/src/uploads/$1"
-    },
-    {
       "src": "/(.*)",
       "dest": "/Frontend/$1",
       "continue": true

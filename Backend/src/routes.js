@@ -16,21 +16,21 @@ import nodemailer from 'nodemailer';
 dotenv.config();
 const router = Router();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const uploadsDir = path.join(__dirname, 'uploads');
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-//Configuracio de multer per a la pujada d'imatges
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir),
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'uploads',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+  },
 });
 const upload = multer({ storage });
 
@@ -266,7 +266,7 @@ router.delete('/me', authMiddleware, async (req, res) => {
 
 router.post('/me/foto', authMiddleware, upload.single('foto'), async (req, res) => {
   try {
-    const filename = req.file.filename;
+    const filename = req.file.path;
 
     await Usuari.update(
       { foto_perfil: filename },
@@ -291,7 +291,7 @@ router.post('/rutes', authMiddleware, upload.array('fotos'), async (req, res) =>
     if (!req.body.punts) return res.status(400).json({ error: "No s'han enviat punts" });
     const punts = JSON.parse(req.body.punts);
 
-    const fotosNoms = req.files ? req.files.map(f => f.filename) : [];
+    const fotosNoms = req.files ? req.files.map(f => f.path) : [];
     const fotosString = fotosNoms.join(',');
 
     const coords = punts.map(p => [p.lng, p.lat]);
@@ -523,20 +523,10 @@ router.put('/rutes/:id', authMiddleware, upload.array('fotos'), async (req, res)
     let fotosExistents = [];
     try { fotosExistents = JSON.parse(existingFotos || '[]'); } catch { fotosExistents = []; }
 
-    const novesFotos = req.files ? req.files.map(f => f.filename) : [];
+    const novesFotos = req.files ? req.files.map(f => f.path) : [];
     const fotosFinals = [...fotosExistents, ...novesFotos];
 
-    //Eliminar fisicament les fotos que s'han tret
-    const fotosAntigues = ruta.fotos
-      ? ruta.fotos.split(',').map(f => f.trim()).filter(Boolean)
-      : [];
-    const fotosEliminades = fotosAntigues.filter(f => !fotosFinals.includes(f));
-    for (const foto of fotosEliminades) {
-      const filepath = path.join(uploadsDir, foto);
-      if (fs.existsSync(filepath)) {
-        try { fs.unlinkSync(filepath); } catch (e) { console.error('ERROR ELIMINANT FOTO:', e); }
-      }
-    }
+    // (Gestió d'esborrat de Cloudinary es podria implementar aquí)
 
     //4-Actualitzar dades basics de la ruta
     const valorPublica = es_publica === 'false' ? false : true;
@@ -1553,7 +1543,7 @@ router.post('/negocis', authMiddleware, upload.array('fotos'), async (req, res) 
     const { nom, tipus, descripcio, zona, latitud, longitud } = req.body;
     if (!nom) return res.status(400).json({ error: "El nom és obligatori" });
 
-    const fotosNoms = req.files ? req.files.map(f => f.filename) : [];
+    const fotosNoms = req.files ? req.files.map(f => f.path) : [];
     const fotosString = fotosNoms.join(',');
 
     const negoci = await Negoci.create({
@@ -1606,36 +1596,13 @@ router.put('/negocis/:id', authMiddleware, upload.array('fotos'), async (req, re
 
     //Noves fotos
     const novesFotos = req.files
-      ? req.files.map(f => f.filename)
+      ? req.files.map(f => f.path)
       : [];
 
     const fotosFinals = [
       ...fotosExistents,
       ...novesFotos
     ];
-
-    const fotosAntigues = negoci.fotos
-      ? negoci.fotos
-        .split(',')
-        .map(f => f.trim())
-        .filter(Boolean)
-      : [];
-
-    const fotosEliminades = fotosAntigues.filter(
-      f => !fotosFinals.includes(f)
-    );
-
-    for (const foto of fotosEliminades) {
-      const filepath = path.join(uploadsDir, foto);
-
-      if (fs.existsSync(filepath)) {
-        try {
-          fs.unlinkSync(filepath);
-        } catch (err) {
-          console.error('ERROR ELIMINANT FOTO:', err);
-        }
-      }
-    }
 
     //Update
     await negoci.update({
@@ -1696,7 +1663,7 @@ router.post('/negocis/:id/posts', authMiddleware, upload.array('fotos'), async (
     }
 
     const { titol, contingut } = req.body;
-    const fotosNoms = req.files ? req.files.map(f => f.filename) : [];
+    const fotosNoms = req.files ? req.files.map(f => f.path) : [];
     const fotosString = fotosNoms.join(',');
 
     const post = await PostNegoci.create({
@@ -1754,19 +1721,8 @@ router.put('/posts_negoci/:id', authMiddleware, upload.array('fotos'), async (re
       fotosExistents = [];
     }
 
-    const novesFotos = req.files ? req.files.map(f => f.filename) : [];
+    const novesFotos = req.files ? req.files.map(f => f.path) : [];
     const fotosFinals = [...fotosExistents, ...novesFotos];
-
-    //Esborrat de fitxers del servidor
-    const fotosAntigues = post.fotos ? post.fotos.split(',').map(f => f.trim()).filter(Boolean) : [];
-    const eliminades = fotosAntigues.filter(f => !fotosFinals.includes(f));
-
-    for (const foto of eliminades) {
-      const filepath = path.join(uploadsDir, foto);
-      if (fs.existsSync(filepath)) {
-        try { fs.unlinkSync(filepath); } catch (err) { console.error(err); }
-      }
-    }
 
     await post.update({
       titol,

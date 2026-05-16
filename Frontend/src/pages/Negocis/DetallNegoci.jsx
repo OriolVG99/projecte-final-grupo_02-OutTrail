@@ -282,7 +282,7 @@ export default function DetallNegoci() {
       {fotos.length > 0 && (
         <div className="negoci-detall-slider">
           <img
-            src={`/uploads/${fotos[fotoIndex]}`}
+            src={fotos[fotoIndex]?.startsWith('http') ? fotos[fotoIndex] : `/uploads/${fotos[fotoIndex]}`}
             className="negoci-detall-slider-img"
             onClick={() => setSelectedImg(`/uploads/${fotos[fotoIndex]}`)}
           />
@@ -400,10 +400,10 @@ export default function DetallNegoci() {
                     {fotosPost.map((f, idx) => (
                       <div key={idx} className="negoci-detall-post-photo-wrapper">
                         <img
-                          src={`/uploads/${f}`}
+                          src={f.startsWith('http') ? f : `/uploads/${f}`}
                           className="negoci-detall-post-photo"
                           alt="Post"
-                          onClick={() => setSelectedImg(`/uploads/${f}`)}
+                          onClick={() => setSelectedImg(f.startsWith('http') ? f : `/uploads/${f}`)}
                         />
                       </div>
                     ))}
@@ -478,7 +478,7 @@ export default function DetallNegoci() {
                 <div className="negoci-detall-review-header">
                   <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }} onClick={() => navigate(`/perfils/${r.id_usuari}`)}>
                     {r.autor?.foto_perfil ? (
-                      <img src={`/uploads/${r.autor.foto_perfil}`} className="negoci-detall-review-avatar" />
+                      <img src={r.autor.foto_perfil?.startsWith('http') ? r.autor.foto_perfil : `/uploads/${r.autor.foto_perfil}`} className="negoci-detall-review-avatar" />
                     ) : (
                       <div className="negoci-detall-review-avatar-placeholder">{r.autor?.username?.[0]}</div>
                     )}

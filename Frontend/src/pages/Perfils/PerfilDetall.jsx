@@ -114,7 +114,7 @@ export default function PerfilDetall() {
       <div className="perfil-detall-header-card">
         <div className="perfil-detall-avatar-container">
           {perfil.foto_perfil ? (
-            <img src={`/uploads/${perfil.foto_perfil}`} alt="Perfil" className="perfil-detall-avatar" />
+            <img src={perfil.foto_perfil?.startsWith('http') ? perfil.foto_perfil : `/uploads/${perfil.foto_perfil}`} alt="Perfil" className="perfil-detall-avatar" />
           ) : (
             <div className="perfil-detall-no-avatar">{perfil.nom?.charAt(0).toUpperCase()}</div>
           )}
@@ -149,7 +149,7 @@ export default function PerfilDetall() {
                     <div className="perfil-detall-card-image-container">
                       {isRuta && item.es_publica === false && <div className="perfil-detall-private-badge">Privada</div>}
                       {fotos.length > 0 ? (
-                        <img src={`/uploads/${fotos[0]}`} alt={item.nom} className="perfil-detall-card-image" />
+                        <img src={fotos[0]?.startsWith('http') ? fotos[0] : `/uploads/${fotos[0]}`} alt={item.nom} className="perfil-detall-card-image" />
                       ) : (
                         <img src="/OutTrail-sinfondo.png" alt="Default" className="perfil-detall-card-image" />
                       )}

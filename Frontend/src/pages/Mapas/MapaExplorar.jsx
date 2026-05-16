@@ -155,7 +155,7 @@ function PreviewPopupRuta({ r }) {
   return (
     <div className="map-preview-tooltip">
       <img 
-        src={r.fotos ? `/uploads/${r.fotos.split(',')[0]}` : "/OutTrail-sinfondo.png"} 
+        src={r.fotos ? (r.fotos.split(',')[0].startsWith('http') ? r.fotos.split(',')[0] : `/uploads/${r.fotos.split(',')[0]}`) : "/OutTrail-sinfondo.png"} 
         className="map-preview-img" 
         style={{ objectFit: r.fotos ? "cover" : "contain", background: r.fotos ? "none" : "#f0f0f0" }}
       />
@@ -197,7 +197,7 @@ function PreviewPopupNegoci({ n }) {
   return (
     <div className="map-preview-tooltip">
       <img 
-        src={n.fotos ? `/uploads/${n.fotos.split(',')[0]}` : "/OutTrail-sinfondo.png"} 
+        src={n.fotos ? (n.fotos.split(',')[0].startsWith('http') ? n.fotos.split(',')[0] : `/uploads/${n.fotos.split(',')[0]}`) : "/OutTrail-sinfondo.png"} 
         className="map-preview-img" 
         style={{ objectFit: n.fotos ? "cover" : "contain", background: n.fotos ? "none" : "#f0f0f0" }}
       />
@@ -737,7 +737,7 @@ export default function MapaExplorar() {
               {seleccio.type === 'ruta' ? (
                 <div>
                   {seleccio.data.fotos ? (
-                    <img src={`/uploads/${seleccio.data.fotos.split(',')[0]}`} className="mapa-explorar-detail-img" />
+                    <img src={seleccio.data.fotos.split(',')[0].startsWith('http') ? seleccio.data.fotos.split(',')[0] : `/uploads/${seleccio.data.fotos.split(',')[0]}`} className="mapa-explorar-detail-img" />
                   ) : (
                     <img src="/OutTrail-sinfondo.png" className="mapa-explorar-detail-img" style={{ objectFit: "contain", background: "#f0f0f0" }} />
                   )}
@@ -751,7 +751,7 @@ export default function MapaExplorar() {
               ) : (
                 <div>
                   {seleccio.data.fotos ? (
-                    <img src={`/uploads/${seleccio.data.fotos.split(',')[0]}`} className="mapa-explorar-detail-img" />
+                    <img src={seleccio.data.fotos.split(',')[0].startsWith('http') ? seleccio.data.fotos.split(',')[0] : `/uploads/${seleccio.data.fotos.split(',')[0]}`} className="mapa-explorar-detail-img" />
                   ) : (
                     <img src="/OutTrail-sinfondo.png" className="mapa-explorar-detail-img" style={{ objectFit: "contain", background: "#f0f0f0" }} />
                   )}

@@ -184,7 +184,7 @@ export default function ExploraNegocis() {
                 <div key={n.id_negoci} className="negocis-card" onClick={() => navigate(`/negocis/${n.id_negoci}`)}>
                   <div className="negocis-photo-box">
                     {fotos.length > 0 ? (
-                      <img src={`/uploads/${fotos[0]}`} className="negocis-photo" alt={n.nom} />
+                      <img src={fotos[0]?.startsWith('http') ? fotos[0] : `/uploads/${fotos[0]}`} className="negocis-photo" alt={n.nom} />
                     ) : (
                       <img src="/OutTrail-sinfondo.png" className="negocis-photo" alt="Sense foto" />
                     )}

@@ -223,7 +223,7 @@ export default function ExploraRutes() {
                   <div className="explora-rutes-photo-box">
                     {fotos.length > 0 ? (
                       <img
-                        src={`/uploads/${fotos[0]}`}
+                        src={fotos[0]?.startsWith('http') ? fotos[0] : `/uploads/${fotos[0]}`}
                         className="explora-rutes-photo"
                         alt={r.nom}
                       />

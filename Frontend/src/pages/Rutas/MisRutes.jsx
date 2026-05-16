@@ -113,7 +113,7 @@ export default function MisRutes() {
             <div key={r.id_ruta} className="mis-rutes-card">
               <div className="mis-rutes-photo-box">
                 {fotos.length > 0 ? (
-                  <img src={`/uploads/${fotos[0]}`} className="mis-rutes-photo" />
+                  <img src={fotos[0]?.startsWith('http') ? fotos[0] : `/uploads/${fotos[0]}`} className="mis-rutes-photo" />
                 ) : (
                   <img src="/OutTrail-sinfondo.png" alt="Sense foto" className="mis-rutes-photo" />
                 )}

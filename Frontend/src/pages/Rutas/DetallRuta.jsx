@@ -433,9 +433,9 @@ ${coords.map(c => `      <trkpt lat="${c[1]}" lon="${c[0]}"></trkpt>`).join("\n"
                     return (
                       <div className="mapa-detall-ruta-slider">
                         <img
-                          src={`/uploads/${fotos[fotoIndex]}`}
+                          src={fotos[fotoIndex]?.startsWith('http') ? fotos[fotoIndex] : `/uploads/${fotos[fotoIndex]}`}
                           className="mapa-detall-ruta-main-img"
-                          onClick={() => setSelectedImg(`/uploads/${fotos[fotoIndex]}`)}
+                          onClick={() => setSelectedImg(fotos[fotoIndex]?.startsWith('http') ? fotos[fotoIndex] : `/uploads/${fotos[fotoIndex]}`)}
                         />
                         {fotos.length > 1 && (
                           <>
@@ -555,7 +555,7 @@ ${coords.map(c => `      <trkpt lat="${c[1]}" lon="${c[0]}"></trkpt>`).join("\n"
                       <div className="mapa-detall-ruta-review-header">
                         <div style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }} onClick={() => navigate(`/perfils/${r.id_usuari}`)}>
                           {r.autor?.foto_perfil ? (
-                            <img src={`/uploads/${r.autor.foto_perfil}`} className="mapa-detall-ruta-avatar" />
+                            <img src={r.autor.foto_perfil?.startsWith('http') ? r.autor.foto_perfil : `/uploads/${r.autor.foto_perfil}`} className="mapa-detall-ruta-avatar" />
                           ) : (
                             <div className="mapa-detall-ruta-avatar-placeholder">{r.autor?.username?.[0]}</div>
                           )}
