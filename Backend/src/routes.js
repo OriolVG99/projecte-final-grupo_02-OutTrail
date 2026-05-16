@@ -506,6 +506,8 @@ router.delete('/rutes/:id', authMiddleware, async (req, res) => {
 
     await RutaGeometria.destroy({ where: { id_ruta: id }, transaction: t });
     await Parada.destroy({ where: { id_ruta: id }, transaction: t });
+    await ReviewRuta.destroy({ where: { id_ruta: id }, transaction: t });
+    await FavoritRuta.destroy({ where: { id_ruta: id }, transaction: t });
     await Ruta.destroy({ where: { id_ruta: id }, transaction: t });
 
     await t.commit();
@@ -1223,7 +1225,7 @@ router.post('/reviews', authMiddleware, async (req, res) => {
     const review = await ReviewRuta.create({ id_ruta, id_usuari, puntuacio, comentari });
 
     const reviews = await ReviewRuta.findAll({ where: { id_ruta } });
-    const mitjana = reviews.reduce((acc, curr) => acc + curr.puntuacio, 0) / reviews.length;
+    const mitjana = reviews.reduce((acc, curr) => acc + Number(curr.puntuacio), 0) / reviews.length;
 
     await Ruta.update({ valoracio_mitjana: mitjana }, { where: { id_ruta } });
 
@@ -1263,7 +1265,7 @@ router.delete('/reviews/:id', authMiddleware, async (req, res) => {
     const reviews = await ReviewRuta.findAll({ where: { id_ruta } });
     let mitjana = 0;
     if (reviews.length > 0) {
-      mitjana = reviews.reduce((acc, curr) => acc + curr.puntuacio, 0) / reviews.length;
+      mitjana = reviews.reduce((acc, curr) => acc + Number(curr.puntuacio), 0) / reviews.length;
     }
     await Ruta.update({ valoracio_mitjana: mitjana }, { where: { id_ruta } });
 
@@ -1287,7 +1289,7 @@ router.post('/negocis-reviews', authMiddleware, async (req, res) => {
     const review = await ReviewNegoci.create({ id_negoci, id_usuari, puntuacio, comentari });
 
     const reviews = await ReviewNegoci.findAll({ where: { id_negoci } });
-    const mitjana = reviews.reduce((acc, curr) => acc + curr.puntuacio, 0) / reviews.length;
+    const mitjana = reviews.reduce((acc, curr) => acc + Number(curr.puntuacio), 0) / reviews.length;
 
     await Negoci.update({ valoracio_mitjana: mitjana }, { where: { id_negoci } });
 
@@ -1327,7 +1329,7 @@ router.delete('/negocis-reviews/:id', authMiddleware, async (req, res) => {
     const reviews = await ReviewNegoci.findAll({ where: { id_negoci } });
     let mitjana = 0;
     if (reviews.length > 0) {
-      mitjana = reviews.reduce((acc, curr) => acc + curr.puntuacio, 0) / reviews.length;
+      mitjana = reviews.reduce((acc, curr) => acc + Number(curr.puntuacio), 0) / reviews.length;
     }
     await Negoci.update({ valoracio_mitjana: mitjana }, { where: { id_negoci } });
 
@@ -1672,6 +1674,8 @@ router.delete('/negocis/:id', authMiddleware, async (req, res) => {
     }
 
     await PostNegoci.destroy({ where: { id_negoci: req.params.id }, transaction: t });
+    await ReviewNegoci.destroy({ where: { id_negoci: req.params.id }, transaction: t });
+    await FavoritNegoci.destroy({ where: { id_negoci: req.params.id }, transaction: t });
     await Negoci.destroy({ where: { id_negoci: req.params.id }, transaction: t });
 
     await t.commit();
