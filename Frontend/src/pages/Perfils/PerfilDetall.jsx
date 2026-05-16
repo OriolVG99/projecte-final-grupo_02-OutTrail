@@ -126,7 +126,7 @@ export default function PerfilDetall() {
             {perfil.experiencia && <span className="perfil-detall-exp-text">• {perfil.experiencia} anys d'experiència</span>}
           </div>
           <div className="perfil-detall-badges">
-            <span className={perfil.id_role === 1 ? "perfil-detall-role-tag-ruta" : "perfil-detall-role-tag-business"}>{perfil.id_role === 1 ? "Caminant" : "Business"}</span>
+            <span className={perfil.id_role === 1 ? "perfil-detall-role-tag-ruta" : perfil.id_role === 2 ? "perfil-detall-role-tag-business" : "perfil-detall-role-tag-admin"}>{perfil.id_role === 1 ? "Caminant" : perfil.id_role === 2 ? "Business" : "Admin"}</span>
             {perfil.zona && <span className="perfil-detall-zona-tag">📍 {perfil.zona}</span>}
           </div>
         </div>
