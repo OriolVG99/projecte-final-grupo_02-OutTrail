@@ -50,6 +50,7 @@
   border-radius: 8px;
   border: 1px solid #ccc;
   min-height: 120px;
+  font-family: Lato, sans-serif;
 }
 
 .editar-post-file-input-label {
