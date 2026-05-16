@@ -77,6 +77,25 @@
     display: flex !important;
   }
 
+  .app-header-nav.non-auth-nav {
+    display: flex !important;
+    position: static !important;
+    flex-direction: row !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    width: auto !important;
+    padding: 0 !important;
+    margin-left: auto !important;
+    margin-right: 10px !important;
+    max-height: none !important;
+  }
+  
+  .app-header-nav.non-auth-nav div {
+    border-bottom: none !important;
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+  }
+
   .app-header-user-actions.open {
     display: flex !important;
     top: 275px !important;

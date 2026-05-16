@@ -518,7 +518,7 @@ export default function EditarRuta() {
                   {existingFotos.map((filename, index) => (
                     <div key={index} className="editar-ruta-foto-item">
                       <img
-                        src={`/uploads/${filename}`}
+                        src={filename?.startsWith('http') ? filename : `/uploads/${filename}`}
                         className="editar-ruta-foto-img"
                         alt=""
                       />
