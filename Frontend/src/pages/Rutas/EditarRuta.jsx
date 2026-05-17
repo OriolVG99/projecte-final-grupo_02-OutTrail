@@ -288,7 +288,7 @@ export default function EditarRuta() {
           text: "No s'ha pogut carregar la ruta. Torna-ho a intentar.",
           color: "red",
           buttonText: "Tornar",
-          onButtonClick: () => navigate("/")
+          onButtonClick: () => navigate("/explorar")
         });
       });
   }, [id, token, user, loading, navigate]);

@@ -41,7 +41,7 @@ export default function Register({ setMode }) {
         password: form.password
       });
       login(resLogin.data.user, resLogin.data.token);
-      navigate("/");
+      navigate("/explorar");
     } catch (err) {
       const errorMsg = err.response?.data?.error;
       setModalError(typeof errorMsg === 'string' ? errorMsg : "Error creant el compte");

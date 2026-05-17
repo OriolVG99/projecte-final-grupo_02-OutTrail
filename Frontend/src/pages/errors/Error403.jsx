@@ -22,7 +22,7 @@ export default function Error403() {
       ) : (
         <>
           <p style={{ fontSize: "18px", color: "#666", marginBottom: "30px", maxWidth: "400px" }}>No tens els permisos necessaris per entrar aquí. Sembla una zona privada!</p>
-          <button className="btn-green" style={{ background: "#004c06", color: "white", padding: "14px 28px", borderRadius: "12px", border: "none", fontWeight: "bold", fontSize: "16px", cursor: "pointer", boxShadow: "0 4px 12px rgba(0, 76, 6, 0.3)" }} onClick={() => navigate("/")}>
+          <button className="btn-green" style={{ background: "#004c06", color: "white", padding: "14px 28px", borderRadius: "12px", border: "none", fontWeight: "bold", fontSize: "16px", cursor: "pointer", boxShadow: "0 4px 12px rgba(0, 76, 6, 0.3)" }} onClick={() => navigate("/explorar")}>
             Tornar a l'inici
           </button>
         </>

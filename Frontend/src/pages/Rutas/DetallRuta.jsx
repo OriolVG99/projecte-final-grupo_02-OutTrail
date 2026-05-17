@@ -282,7 +282,7 @@ export default function DetallRuta() {
           if (location.state?.fromMe) {
             navigate("/me/rutes");
           } else {
-            navigate("/");
+            navigate("/explorar");
           }
         } catch (err) {
           setMsg({ title: "Error", text: "No s'ha pogut eliminar la ruta", color: "red" });
