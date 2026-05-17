@@ -47,9 +47,6 @@ button:active {
 }
 
 /* Styling for unauthenticated header */
-.app-header-container.not-authenticated {
-  position: relative !important;
-}
 
 .app-header-container.not-authenticated .header-middle-btn {
   position: absolute !important;
