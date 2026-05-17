@@ -34,8 +34,8 @@ export default function AdminPanel() {
     } catch (err) {}
   };
 
-  const loadUsers = async (customPage = page) => {
-    setLoadingUsers(true);
+  const loadUsers = async (customPage = page, silent = false) => {
+    if (!silent) setLoadingUsers(true);
     try {
       const res = await axios.get("/api/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
@@ -43,9 +43,9 @@ export default function AdminPanel() {
       });
       setUsers(res.data.users || []);
       setTotal(res.data.total || 0);
-      setLoadingUsers(false);
+      if (!silent) setLoadingUsers(false);
     } catch (err) {
-      setLoadingUsers(false);
+      if (!silent) setLoadingUsers(false);
     }
   };
 
@@ -57,8 +57,26 @@ export default function AdminPanel() {
         setFullyLoaded(true);
       };
       init();
+
+      const interval = setInterval(() => {
+        loadUsers(page, true);
+      }, 5000);
+
+      const handleFocus = () => {
+        if (document.visibilityState === "visible") {
+          loadUsers(page, true);
+        }
+      };
+      window.addEventListener("focus", handleFocus);
+      document.addEventListener("visibilitychange", handleFocus);
+
+      return () => {
+        clearInterval(interval);
+        window.removeEventListener("focus", handleFocus);
+        document.removeEventListener("visibilitychange", handleFocus);
+      };
     }
-  }, [authLoading]);
+  }, [authLoading, page, search, zona, roleFilter, token]);
 
   const buscar = () => {
     setPage(1);

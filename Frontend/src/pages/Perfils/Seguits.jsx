@@ -34,8 +34,8 @@ export default function Seguits() {
     } catch (err) {}
   };
 
-  const loadFollowing = async (customPage = page, allowEmpty = true) => {
-    setLoadingUsers(true);
+  const loadFollowing = async (customPage = page, allowEmpty = true, silent = false) => {
+    if (!silent) setLoadingUsers(true);
     try {
       const res = await axios.get("/api/users/following", {
         headers: { Authorization: `Bearer ${token}` },
@@ -43,14 +43,14 @@ export default function Seguits() {
       });
       const rows = res.data.users || [];
       if (!allowEmpty && rows.length === 0) {
-        setLoadingUsers(false);
+        if (!silent) setLoadingUsers(false);
         return null;
       }
       setUsers(rows);
-      setLoadingUsers(false);
+      if (!silent) setLoadingUsers(false);
       return rows;
     } catch (err) {
-      setLoadingUsers(false);
+      if (!silent) setLoadingUsers(false);
       return null;
     }
   };
@@ -64,7 +64,27 @@ export default function Seguits() {
       }
     };
     init();
-  }, [authLoading]);
+
+    if (!authLoading) {
+      const interval = setInterval(() => {
+        loadFollowing(page, true, true);
+      }, 5000);
+
+      const handleFocus = () => {
+        if (document.visibilityState === "visible") {
+          loadFollowing(page, true, true);
+        }
+      };
+      window.addEventListener("focus", handleFocus);
+      document.addEventListener("visibilitychange", handleFocus);
+
+      return () => {
+        clearInterval(interval);
+        window.removeEventListener("focus", handleFocus);
+        document.removeEventListener("visibilitychange", handleFocus);
+      };
+    }
+  }, [authLoading, page, search, zona, experiencia, roleFilter, token]);
 
   const buscar = async () => {
     setPage(1);

@@ -23,7 +23,7 @@ export default function MisRutes() {
   const [messageText, setMessageText] = useState("");
   const [rutaToDelete, setRutaToDelete] = useState(null);
 
-  const loadRutes = async (customPage = page) => {
+  const loadRutes = async (customPage = page, silent = false) => {
     try {
       const offset = (customPage - 1) * PAGE_SIZE;
       const res = await axios.get(`/api/rutes/user/${user.id}`, {
@@ -48,8 +48,28 @@ export default function MisRutes() {
   };
 
   useEffect(() => {
-    if (user?.id) loadRutes();
-  }, [user]);
+    if (user?.id) {
+      loadRutes();
+
+      const interval = setInterval(() => {
+        loadRutes(page, true);
+      }, 5000);
+
+      const handleFocus = () => {
+        if (document.visibilityState === "visible") {
+          loadRutes(page, true);
+        }
+      };
+      window.addEventListener("focus", handleFocus);
+      document.addEventListener("visibilitychange", handleFocus);
+
+      return () => {
+        clearInterval(interval);
+        window.removeEventListener("focus", handleFocus);
+        document.removeEventListener("visibilitychange", handleFocus);
+      };
+    }
+  }, [user, page, token]);
 
   const eliminarRuta = async () => {
     if (!rutaToDelete) return;

@@ -28,11 +28,29 @@ export default function Favorits() {
   useEffect(() => {
     if (authLoading || !token) return;
     loadFavorits(page, activeTab);
-  }, [token, page, activeTab]);
 
-  const loadFavorits = async (customPage = 1, tab = activeTab) => {
+    const interval = setInterval(() => {
+      loadFavorits(page, activeTab, true);
+    }, 5000);
+
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") {
+        loadFavorits(page, activeTab, true);
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
+  }, [token, page, activeTab, authLoading]);
+
+  const loadFavorits = async (customPage = 1, tab = activeTab, silent = false) => {
     if (!token) return;
-    setLoading(true);
+    if (!silent) setLoading(true);
     try {
       const res = await axios.get("/api/favorits/me", {
         headers: { Authorization: `Bearer ${token}` },
@@ -45,7 +63,7 @@ export default function Favorits() {
     } catch (err) {
       console.error("Error carregant favorits", err);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 

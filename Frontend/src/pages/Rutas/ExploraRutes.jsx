@@ -28,8 +28,8 @@ export default function ExploraRutes() {
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 6;
 
-  const loadRutes = async (customPage = page) => {
-    setLoading(true);
+  const loadRutes = async (customPage = page, silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const offset = (customPage - 1) * PAGE_SIZE;
       const res = await axios.get("/api/rutes-explora", {
@@ -46,11 +46,11 @@ export default function ExploraRutes() {
       const hasMore = rows.length > PAGE_SIZE;
       setRutes(rows.slice(0, PAGE_SIZE));
       setHasNextPage(hasMore);
-      setLoading(false);
+      if (!silent) setLoading(false);
       return rows;
     } catch (err) {
       console.error(err);
-      setLoading(false);
+      if (!silent) setLoading(false);
       return null;
     }
   };
@@ -110,7 +110,27 @@ export default function ExploraRutes() {
       setFullyLoaded(true);
     };
     init();
-  }, []);
+
+    const interval = setInterval(() => {
+      loadRutes(page, true);
+      loadFavorits();
+    }, 5000);
+
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") {
+        loadRutes(page, true);
+        loadFavorits();
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
+  }, [page, search, zona, dificultat, distanciaMax, token]);
 
   const buscar = useCallback(async () => {
     setPage(1);

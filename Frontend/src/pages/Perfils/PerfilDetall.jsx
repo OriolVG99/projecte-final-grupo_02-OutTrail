@@ -46,11 +46,30 @@ export default function PerfilDetall() {
   }, [id, token]);
 
   useEffect(() => {
-    if (perfil) loadItems(page);
+    if (!perfil) return;
+    loadItems(page);
+
+    const interval = setInterval(() => {
+      loadItems(page, true);
+    }, 5000);
+
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") {
+        loadItems(page, true);
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
   }, [perfil, page]);
 
-  const loadItems = async (customPage) => {
-    setItemsLoading(true);
+  const loadItems = async (customPage, silent = false) => {
+    if (!silent) setItemsLoading(true);
     try {
       const config = {
         headers: { Authorization: `Bearer ${token}` },
@@ -71,7 +90,7 @@ export default function PerfilDetall() {
     } catch (err) {
       console.error(err);
     } finally {
-      setItemsLoading(false);
+      if (!silent) setItemsLoading(false);
     }
   };
 

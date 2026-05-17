@@ -29,8 +29,8 @@ export default function ExploraNegocis() {
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 6;
 
-  const loadNegocis = async (customPage = page) => {
-    setLoading(true);
+  const loadNegocis = async (customPage = page, silent = false) => {
+    if (!silent) setLoading(true);
     try {
       const offset = (customPage - 1) * PAGE_SIZE;
       const res = await axios.get("/api/negocis", {
@@ -40,11 +40,11 @@ export default function ExploraNegocis() {
       const hasMore = rows.length > PAGE_SIZE;
       setNegocis(rows.slice(0, PAGE_SIZE));
       setHasNextPage(hasMore);
-      setLoading(false);
+      if (!silent) setLoading(false);
       return rows;
     } catch (err) {
       console.error(err);
-      setLoading(false);
+      if (!silent) setLoading(false);
       return null;
     }
   };
@@ -104,7 +104,27 @@ export default function ExploraNegocis() {
       setFullyLoaded(true);
     };
     init();
-  }, []);
+
+    const interval = setInterval(() => {
+      loadNegocis(page, true);
+      loadFavorits();
+    }, 5000);
+
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") {
+        loadNegocis(page, true);
+        loadFavorits();
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
+  }, [page, search, zona, tipus, token]);
 
   const buscar = useCallback(async () => {
     setPage(1);

@@ -330,11 +330,13 @@ export default function MapaExplorar() {
     } catch (err) { console.error(err); }
   }, [token]);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    setSeleccio(null);
-    setGeometryRuta(null);
-    setParadesRuta([]);
+  const fetchData = useCallback(async (silent = false) => {
+    if (!silent) {
+      setLoading(true);
+      setSeleccio(null);
+      setGeometryRuta(null);
+      setParadesRuta([]);
+    }
 
     try {
       const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
@@ -354,9 +356,9 @@ export default function MapaExplorar() {
 
     } catch (err) {
       console.error(err);
-      setMsg({ title: "Error", text: "Error en carregar les dades", color: "red" });
+      if (!silent) setMsg({ title: "Error", text: "Error en carregar les dades", color: "red" });
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   }, [token, user, dificultat, maxKm, minRating, minRatingNegoci, tipusNegoci]);
 
@@ -416,6 +418,26 @@ export default function MapaExplorar() {
       await fetchData();
     };
     init();
+
+    const interval = setInterval(() => {
+      loadFavorits();
+      fetchData(true);
+    }, 5000);
+
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") {
+        loadFavorits();
+        fetchData(true);
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
   }, [token, loadFavorits, fetchData]);
 
   //Funcio per seleccionar una ruta i descarregar la geometria i parades

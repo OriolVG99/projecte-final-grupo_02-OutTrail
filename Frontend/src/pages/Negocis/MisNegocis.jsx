@@ -23,7 +23,7 @@ export default function MisNegocis() {
   const [messageText, setMessageText] = useState("");
   const [negociToDelete, setNegociToDelete] = useState(null);
 
-  const loadNegocis = async (customPage = page) => {
+  const loadNegocis = async (customPage = page, silent = false) => {
     try {
       const offset = (customPage - 1) * PAGE_SIZE;
       const res = await axios.get("/api/me/negocis", {
@@ -49,7 +49,25 @@ export default function MisNegocis() {
 
   useEffect(() => {
     loadNegocis();
-  }, []);
+
+    const interval = setInterval(() => {
+      loadNegocis(page, true);
+    }, 5000);
+
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") {
+        loadNegocis(page, true);
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
+  }, [page, token]);
 
   const eliminarNegoci = async () => {
     if (!negociToDelete) return;
