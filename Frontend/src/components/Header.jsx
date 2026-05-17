@@ -31,7 +31,7 @@ export default function Header() {
   const btnLogin = { ...btn, background: "#ffffff", color: "#004c06" };
 
   return (
-    <header style={header} className="app-header-container">
+    <header style={header} className={`app-header-container ${user ? "authenticated" : "not-authenticated"}`}>
       <div style={logoBox} onClick={() => navigate("/")}>
         <img src="/OutTrailBlanco-sinfondo.png" alt="OutTrail" style={logoImg} />
       </div>
@@ -58,10 +58,14 @@ export default function Header() {
           <button className="btn-red" style={btnLogout} onClick={() => setShowLogoutConfirm(true)}>Logout</button>
         </div>
       ) : (
-        <div className="app-header-login" style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-          <button style={{ ...btn, background: "rgba(255,255,255,0.2)", color: "white" }} onClick={() => navigate("/explorar")}>Explorar</button>
-          <button style={btnLogin} onClick={() => navigate("/auth")}>Iniciar sessió</button>
-        </div>
+        <>
+          <div className="header-middle-btn">
+            <button style={{ ...btn, background: "rgba(255,255,255,0.2)", color: "white" }} onClick={() => navigate("/explorar")}>Explorar</button>
+          </div>
+          <div className="app-header-login" style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <button style={btnLogin} onClick={() => navigate("/auth")}>Iniciar sessió</button>
+          </div>
+        </>
       )}
 
       {showLogoutConfirm && (

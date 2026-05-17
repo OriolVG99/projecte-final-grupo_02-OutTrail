@@ -49,11 +49,17 @@ function MapResizer({ isSidebarVisible }) {
   return null;
 }
 
-function ChangeView({ center, zoom }) {
+function ChangeView({ center, zoom, hasLocationPermission }) {
   const map = useMap();
+  const hasCenteredRef = useRef(false);
+
   useEffect(() => {
-    map.setView(center, zoom);
-  }, [center, zoom, map]);
+    if (hasLocationPermission && !hasCenteredRef.current) {
+      map.setView(center, zoom);
+      hasCenteredRef.current = true;
+    }
+  }, [center, zoom, map, hasLocationPermission]);
+
   return null;
 }
 
@@ -530,7 +536,7 @@ export default function CrearRuta() {
             minZoom={3}
             maxBounds={[[-90, -180], [90, 180]]}
           >
-            <ChangeView center={userLocation} zoom={hasLocationPermission ? 13 : 6} />
+            <ChangeView center={userLocation} zoom={hasLocationPermission ? 13 : 6} hasLocationPermission={hasLocationPermission} />
             <MapResizer isSidebarVisible={isSidebarVisible} />
             <ZoomControl position="topright" />
             <TileLayer 

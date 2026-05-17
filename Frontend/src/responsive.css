@@ -29,12 +29,14 @@
     padding: 0;
   }
 
-  .app-header-login {
+  .app-header-login,
+  .header-middle-btn {
     display: flex;
     align-items: center;
   }
 
-  .app-header-login button {
+  .app-header-login button,
+  .header-middle-btn button {
     font-size: 12px !important;
     padding: 6px 12px !important;
   }

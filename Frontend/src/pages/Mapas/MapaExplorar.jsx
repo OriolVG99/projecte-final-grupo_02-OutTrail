@@ -47,11 +47,21 @@ function MapResizer({ isSidebarVisible }) {
   return null;
 }
 
-function ChangeView({ center, zoom }) {
+function ChangeView({ center, zoom, hasLocationPermission, ignoreAutoCenter }) {
   const map = useMap();
+  const hasCenteredRef = useRef(false);
+
   useEffect(() => {
-    map.setView(center, zoom);
-  }, [center, zoom, map]);
+    if (ignoreAutoCenter) {
+      hasCenteredRef.current = true;
+      return;
+    }
+    if (hasLocationPermission && !hasCenteredRef.current) {
+      map.setView(center, zoom);
+      hasCenteredRef.current = true;
+    }
+  }, [center, zoom, map, hasLocationPermission, ignoreAutoCenter]);
+
   return null;
 }
 
@@ -234,6 +244,7 @@ function PreviewPopupNegoci({ n }) {
 export default function MapaExplorar() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
+  const hadSavedStateRef = useRef(!!sessionStorage.getItem('outtrail_map_state'));
 
   const [rutes, setRutes] = useState([]);
   const [negocis, setNegocis] = useState([]);
@@ -793,7 +804,7 @@ export default function MapaExplorar() {
               minZoom={3}
               maxBounds={[[-90, -180], [90, 180]]}
             >
-              <ChangeView center={userLocation} zoom={hasLocationPermission ? 14 : 6} />
+              <ChangeView center={userLocation} zoom={hasLocationPermission ? 14 : 6} hasLocationPermission={hasLocationPermission} ignoreAutoCenter={hadSavedStateRef.current} />
               <MapResizer isSidebarVisible={isSidebarVisible} />
               <MapRefSetter setMap={setMapInstance} />
               <ClickHandler onClick={() => setSelectedParadaId(null)} />
