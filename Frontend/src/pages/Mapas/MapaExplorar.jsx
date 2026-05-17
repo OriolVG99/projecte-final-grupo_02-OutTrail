@@ -40,9 +40,14 @@ const iconNegociSelected = new L.Icon({ iconUrl: "/iconoverde.png", iconSize: [4
 function MapResizer({ isSidebarVisible }) {
   const map = useMap();
   useEffect(() => {
-    setTimeout(() => {
-      map.invalidateSize();
+    const timer = setTimeout(() => {
+      try {
+        if (map) map.invalidateSize();
+      } catch (e) {
+        console.warn("map.invalidateSize error", e);
+      }
     }, 400);
+    return () => clearTimeout(timer);
   }, [isSidebarVisible, map]);
   return null;
 }
