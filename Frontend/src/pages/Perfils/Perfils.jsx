@@ -21,6 +21,7 @@ export default function Perfils() {
   const [page, setPage] = useState(1);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
+  const [hasNextPage, setHasNextPage] = useState(false);
   const PAGE_SIZE = 5;
 
   const loadZones = async () => {
@@ -37,14 +38,16 @@ export default function Perfils() {
     try {
       const res = await axios.get("/api/users", {
         headers: { Authorization: `Bearer ${token}` },
-        params: { search, zona, experiencia, role: roleFilter, page: customPage, limit: PAGE_SIZE }
+        params: { search, zona, experiencia, role: roleFilter, page: customPage, limit: PAGE_SIZE + 1 }
       });
       const rows = res.data.users || [];
       if (!allowEmpty && rows.length === 0) {
         if (!silent) setLoadingUsers(false);
         return null;
       }
-      setUsers(rows);
+      const hasMore = rows.length > PAGE_SIZE;
+      setUsers(rows.slice(0, PAGE_SIZE));
+      setHasNextPage(hasMore);
       if (!silent) setLoadingUsers(false);
       return rows;
     } catch (err) {
@@ -99,7 +102,7 @@ export default function Perfils() {
   };
 
   const canGoPrev = page > 1;
-  const canGoNext = users.length === PAGE_SIZE;
+  const canGoNext = hasNextPage;
 
   const follow = async (id) => {
     setActionLoading(id);
