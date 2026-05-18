@@ -19,7 +19,7 @@ export default function Perfils() {
   const [experiencia, setExperiencia] = useState("");
   const [roleFilter, setRoleFilter] = useState("tots");
   const [page, setPage] = useState(1);
-  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
   const PAGE_SIZE = 5;
 

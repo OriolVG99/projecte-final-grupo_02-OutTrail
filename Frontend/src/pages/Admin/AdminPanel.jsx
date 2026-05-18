@@ -18,7 +18,7 @@ export default function AdminPanel() {
   const [zona, setZona] = useState("");
   const [roleFilter, setRoleFilter] = useState("tots");
   const [page, setPage] = useState(1);
-  const [loadingUsers, setLoadingUsers] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
   const [msg, setMsg] = useState(null);
   const [deleting, setDeleting] = useState(false);

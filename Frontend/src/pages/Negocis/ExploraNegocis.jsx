@@ -17,7 +17,7 @@ export default function ExploraNegocis() {
   const [fullyLoaded, setFullyLoaded] = useState(false);
   const [negocis, setNegocis] = useState([]);
   const [zones, setZones] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [hasNextPage, setHasNextPage] = useState(false);
   const [favorits, setFavorits] = useState(new Set());
   const [favLoading, setFavLoading] = useState(false);
