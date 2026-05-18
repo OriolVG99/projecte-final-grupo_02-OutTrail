@@ -376,7 +376,7 @@ export default function DetallNegoci() {
                 style={{ width: "100%", height: "450px" }}
                 maxBounds={[[-90, -180], [90, 180]]}
               >
-                <TileLayer url={mapLayers[mapType]} maxNativeZoom={mapType === "topo" ? 17 : 19} maxZoom={17} noWrap={true} />
+                <TileLayer url={mapLayers[mapType]} maxNativeZoom={mapType === "topo" ? 17 : 17} maxZoom={19} noWrap={true} />
                 <Marker position={[negoci.latitud, negoci.longitud]} icon={markerIcon}>
                   <Popup offset={[0, -20]}>{negoci.nom}</Popup>
                 </Marker>
