@@ -97,13 +97,13 @@ export default function AdminBusinessRequests() {
           <div className="admin-business-requests-row-main">
             <div className="admin-business-requests-info">
               <div className="admin-business-requests-text-row">
-                <strong>👤 Nom:</strong> <span>{req.nom} {req.cognoms}</span>
+                <strong>Nom:</strong> <span>{req.nom} {req.cognoms}</span>
               </div>
               <div className="admin-business-requests-text-row">
-                <strong>@ Username:</strong> <span>{req.username}</span>
+                <strong>Username:</strong> <span>{req.username}</span>
               </div>
               <div className="admin-business-requests-text-row">
-                <strong>✉️ Email:</strong> <span>{req.email}</span>
+                <strong>Email:</strong> <span>{req.email}</span>
               </div>
             </div>
             <div className="admin-business-requests-buttons">

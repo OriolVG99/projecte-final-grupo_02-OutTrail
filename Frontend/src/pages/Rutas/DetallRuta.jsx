@@ -420,14 +420,8 @@ ${coords.map(c => `      <trkpt lat="${c[1]}" lon="${c[0]}"></trkpt>`).join("\n"
   });
 
   const totalPages = Math.ceil(sortedReviews.length / reviewsPerPage);
-
-  useEffect(() => {
-    if (totalPages > 0 && reviewsPage > totalPages) {
-      setReviewsPage(totalPages);
-    }
-  }, [totalPages, reviewsPage]);
-
-  const paginatedReviews = sortedReviews.slice((reviewsPage - 1) * reviewsPerPage, reviewsPage * reviewsPerPage);
+  const correctedReviewsPage = reviewsPage > totalPages ? Math.max(1, totalPages) : reviewsPage;
+  const paginatedReviews = sortedReviews.slice((correctedReviewsPage - 1) * reviewsPerPage, correctedReviewsPage * reviewsPerPage);
 
   const toggleMapType = () => {
     if (mapType === "satellite") setMapType("osm");
@@ -606,16 +600,16 @@ ${coords.map(c => `      <trkpt lat="${c[1]}" lon="${c[0]}"></trkpt>`).join("\n"
                 {totalPages > 1 && (
                   <div className="mapa-detall-ruta-pagination">
                     <button
-                      disabled={reviewsPage === 1}
-                      onClick={() => setReviewsPage(p => p - 1)}
+                      disabled={correctedReviewsPage === 1}
+                      onClick={() => setReviewsPage(correctedReviewsPage - 1)}
                       className="mapa-detall-ruta-page-btn"
                     >
                       ‹
                     </button>
-                    <span className="mapa-detall-ruta-page-info">Pàgina {reviewsPage} de {totalPages}</span>
+                    <span className="mapa-detall-ruta-page-info">Pàgina {correctedReviewsPage} de {totalPages}</span>
                     <button
-                      disabled={reviewsPage === totalPages}
-                      onClick={() => setReviewsPage(p => p + 1)}
+                      disabled={correctedReviewsPage === totalPages}
+                      onClick={() => setReviewsPage(correctedReviewsPage + 1)}
                       className="mapa-detall-ruta-page-btn"
                     >
                       ›
