@@ -103,7 +103,6 @@ export default function CrearNegoci() {
   const [tipus, setTipus] = useState("");
   const [descripcio, setDescripcio] = useState("");
   const [latLng, setLatLng] = useState({ lat: "", lng: "" });
-  const [latLng, setLatLng] = useState({ lat: "", lng: "" });
   const [fotosGrid, setFotosGrid] = useState([]);
   const [loading, setLoading] = useState(false);
   const [mapType, setMapType] = useState("satellite");
