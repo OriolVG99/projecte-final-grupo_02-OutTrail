@@ -106,7 +106,7 @@ export default function ExploraNegocis() {
     if (fullyLoaded) {
       loadNegocis(page);
     }
-  }, [page, search, zona, tipus]);
+  }, [page, search, zona, tipus, fullyLoaded]);
 
   useEffect(() => {
     if (!fullyLoaded) return;

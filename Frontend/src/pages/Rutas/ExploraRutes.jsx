@@ -112,7 +112,7 @@ export default function ExploraRutes() {
     if (fullyLoaded) {
       loadRutes(page);
     }
-  }, [page, zona, dificultat, search]); // Don't include distanciaMax unless we want it to search as we type
+  }, [page, zona, dificultat, search, fullyLoaded]); // Don't include distanciaMax unless we want it to search as we type
 
   useEffect(() => {
     if (!fullyLoaded) return;

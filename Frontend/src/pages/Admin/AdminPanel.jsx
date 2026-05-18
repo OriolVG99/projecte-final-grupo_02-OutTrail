@@ -59,7 +59,7 @@ export default function AdminPanel() {
     if (fullyLoaded) {
       loadUsers(page);
     }
-  }, [page, search, zona, roleFilter]);
+  }, [page, search, zona, roleFilter, fullyLoaded]);
 
   useEffect(() => {
     if (!fullyLoaded || authLoading) return;

@@ -63,7 +63,7 @@ export default function Perfils() {
     if (fullyLoaded) {
       loadUsers(page);
     }
-  }, [page, search, zona, experiencia, roleFilter]);
+  }, [page, search, zona, experiencia, roleFilter, fullyLoaded]);
 
   useEffect(() => {
     if (!fullyLoaded || authLoading) return;
