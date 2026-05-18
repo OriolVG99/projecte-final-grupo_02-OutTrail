@@ -288,7 +288,7 @@ export default function CrearNegoci() {
                   center={userLocation || fallbackVilanova}
                   zoom={hasLocationPermission ? 14 : 6}
                   minZoom={2.5}
-                  maxZoom={mapType === "topo" ? 12 : 17}
+                  maxZoom={mapType === "topo" ? 17 : 19}
                   worldCopyJump={false}
                   noWrap={true}
                   zoomControl={false}
@@ -296,7 +296,7 @@ export default function CrearNegoci() {
                   maxBoundsViscosity={1.0}
                   style={{ height: "100%", width: "100%" }}
                 >
-                  <TileLayer url={mapLayers[mapType]} maxNativeZoom={mapType === "topo" ? 12 : 17} maxZoom={mapType === "topo" ? 12 : 17} noWrap={true} />
+                  <TileLayer url={mapLayers[mapType]} maxNativeZoom={mapType === "topo" ? 17 : 19} maxZoom={mapType === "topo" ? 17 : 19} noWrap={true} />
                   <ClickHandler setLatLng={setLatLng} onZonaAuto={setZona} />
                   {latLng.lat !== "" && latLng.lng !== "" && !isNaN(Number(latLng.lat)) && !isNaN(Number(latLng.lng)) && (
                     <Marker position={[Number(latLng.lat), Number(latLng.lng)]} icon={markerIcon} />

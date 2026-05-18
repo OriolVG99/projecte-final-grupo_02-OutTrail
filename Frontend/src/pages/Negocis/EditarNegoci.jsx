@@ -313,8 +313,8 @@ export default function EditarNegoci() {
             <h2 className="editar-negoci-section-title">Ubicació al mapa</h2>
             <div className="editar-negoci-map-box">
               <div style={{ position: "relative", width: "100%", height: "450px" }}>
-                <MapContainer whenCreated={setMapInstance} center={[latLng.lat || 41.226, latLng.lng || 1.725]} zoom={15} maxZoom={mapType === "topo" ? 12 : 17} style={{ height: "100%", width: "100%" }}>
-                  <TileLayer url={mapLayers[mapType]} noWrap={true} />
+                <MapContainer whenCreated={setMapInstance} center={[latLng.lat || 41.226, latLng.lng || 1.725]} zoom={15} maxZoom={mapType === "topo" ? 17 : 19} style={{ height: "100%", width: "100%" }}>
+                  <TileLayer url={mapLayers[mapType]} maxNativeZoom={mapType === "topo" ? 17 : 19} maxZoom={mapType === "topo" ? 17 : 19} noWrap={true} />
                   <ClickHandler setLatLng={setLatLng} onZonaAuto={setZona} />
                   {latLng.lat && latLng.lng && <Marker position={[Number(latLng.lat), Number(latLng.lng)]} icon={defaultIcon} />}
                 </MapContainer>

@@ -371,12 +371,12 @@ export default function DetallNegoci() {
               <MapContainer
                 center={[negoci.latitud, negoci.longitud]}
                 zoom={15}
-                maxZoom={mapType === "topo" ? 12 : 17}
+                maxZoom={mapType === "topo" ? 17 : 19}
                 minZoom={3}
                 style={{ width: "100%", height: "450px" }}
                 maxBounds={[[-90, -180], [90, 180]]}
               >
-                <TileLayer url={mapLayers[mapType]} noWrap={true} />
+                <TileLayer url={mapLayers[mapType]} maxNativeZoom={mapType === "topo" ? 17 : 19} maxZoom={mapType === "topo" ? 17 : 19} noWrap={true} />
                 <Marker position={[negoci.latitud, negoci.longitud]} icon={markerIcon}>
                   <Popup offset={[0, -20]}>{negoci.nom}</Popup>
                 </Marker>
