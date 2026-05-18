@@ -20,7 +20,8 @@ import {
   SortableContext,
   verticalListSortingStrategy,
   useSortable,
-  arrayMove
+  arrayMove,
+  rectSortingStrategy
 } from "@dnd-kit/sortable";
 
 import { CSS } from "@dnd-kit/utilities";
@@ -161,6 +162,30 @@ const SortablePunt = memo(function SortablePunt({ punt, setPunts, puntRefs, sele
   );
 });
 
+const SortablePhoto = memo(function SortablePhoto({ photo, removePhoto }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: photo.id
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        touchAction: 'none'
+      }}
+      className="editar-ruta-preview-item"
+    >
+      <img src={photo.preview || photo.url} className="editar-ruta-preview-img" {...attributes} {...listeners} alt="" />
+      <button 
+        onClick={(e) => { e.stopPropagation(); removePhoto(photo.id); }}
+        className="editar-ruta-remove-preview"
+      >×</button>
+    </div>
+  );
+});
+
 export default function EditarRuta() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -180,9 +205,7 @@ export default function EditarRuta() {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [negocis, setNegocis] = useState([]);
 
-  const [existingFotos, setExistingFotos] = useState([]); 
-  const [imageFiles, setImageFiles] = useState([]);        
-  const [previews, setPreviews] = useState([]);             
+  const [fotosGrid, setFotosGrid] = useState([]);
 
   const [geometry, setGeometry] = useState(null);
   const [mapType, setMapType] = useState("satellite");
@@ -260,7 +283,14 @@ export default function EditarRuta() {
         setDistancia(ruta.distancia_km || "");
 
         if (ruta.fotos) {
-          setExistingFotos(ruta.fotos.split(",").map(f => f.trim()).filter(Boolean));
+          const files = ruta.fotos.split(",").map(f => f.trim()).filter(Boolean);
+          const mapped = files.map(f => ({
+             id: f,
+             type: 'existing',
+             url: f.startsWith('http') ? f : `/uploads/${f}`,
+             filename: f
+          }));
+          setFotosGrid(mapped);
         }
 
         const puntsCarregats = paradesDB.map(p => ({
@@ -387,25 +417,34 @@ export default function EditarRuta() {
     }
 
     if (validFiles.length > 0) {
-      setImageFiles(prev => [...prev, ...validFiles]);
-      const newPreviews = validFiles.map(file => URL.createObjectURL(file));
-      setPreviews(prev => [...prev, ...newPreviews]);
+      const newItems = validFiles.map(file => ({
+        id: `new-${Date.now()}-${Math.random()}`,
+        type: 'new',
+        file,
+        preview: URL.createObjectURL(file)
+      }));
+      setFotosGrid(prev => [...prev, ...newItems]);
     }
   };
 
-  const removeNewImage = (index) => {
-    setImageFiles(prev => prev.filter((_, i) => i !== index));
-    setPreviews(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const removeExistingFoto = (filename) => {
-    setExistingFotos(prev => prev.filter(f => f !== filename));
+  const removePhoto = (id) => {
+    setFotosGrid(prev => prev.filter(f => f.id !== id));
   };
 
   const onDragEnd = (event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
     setPunts(prev => {
+      const oldIndex = prev.findIndex(p => p.id === active.id);
+      const newIndex = prev.findIndex(p => p.id === over.id);
+      return arrayMove(prev, oldIndex, newIndex);
+    });
+  };
+
+  const onDragEndPhotos = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setFotosGrid(prev => {
       const oldIndex = prev.findIndex(p => p.id === active.id);
       const newIndex = prev.findIndex(p => p.id === over.id);
       return arrayMove(prev, oldIndex, newIndex);
@@ -448,10 +487,16 @@ export default function EditarRuta() {
     formData.append("dificultat", dificultat);
     formData.append("es_publica", esPublica);
     formData.append("distancia_km", distancia);
-    formData.append("punts", JSON.stringify(punts.map(p => ({ nom: p.nom, latitud: p.lat, longitud: p.lng, tipus: p.tipus }))));
-    formData.append("existingFotos", JSON.stringify(existingFotos));
+    const existingToKeep = fotosGrid.filter(f => f.type === 'existing').map(f => f.filename);
+    const ordenFotos = fotosGrid.map(f => f.type);
+    
+    formData.append("existingFotos", JSON.stringify(existingToKeep));
+    formData.append("ordenFotos", JSON.stringify(ordenFotos));
+    
     if (geometry) formData.append("geojson", JSON.stringify(geometry));
-    const totalSize = imageFiles.reduce((acc, f) => acc + f.size, 0);
+    
+    const newFiles = fotosGrid.filter(f => f.type === 'new');
+    const totalSize = newFiles.reduce((acc, f) => acc + f.file.size, 0);
     if (totalSize > 4.5 * 1024 * 1024) {
       setModal({ 
         title: "Atenció", 
@@ -464,7 +509,7 @@ export default function EditarRuta() {
       return;
     }
 
-    imageFiles.forEach(file => formData.append("fotos", file));
+    newFiles.forEach(f => formData.append("fotos", f.file));
 
     try {
       await axios.put(
@@ -554,24 +599,6 @@ export default function EditarRuta() {
 
               <label><strong>Fotos de la ruta</strong></label>
 
-              {existingFotos.length > 0 && (
-                <div className="editar-ruta-fotos-grid">
-                  {existingFotos.map((filename, index) => (
-                    <div key={index} className="editar-ruta-foto-item">
-                      <img
-                        src={filename?.startsWith('http') ? filename : `/uploads/${filename}`}
-                        className="editar-ruta-foto-img"
-                        alt=""
-                      />
-                      <button
-                        onClick={() => removeExistingFoto(filename)}
-                        className="editar-ruta-remove-foto"
-                      >×</button>
-                    </div>
-                  ))}
-                </div>
-              )}
-
               <div
                 className="editar-ruta-dropzone"
                 onClick={() => fileInputRef.current.click()}
@@ -587,18 +614,16 @@ export default function EditarRuta() {
                 />
               </div>
 
-              {previews.length > 0 && (
-                <div className="editar-ruta-previews-container">
-                  {previews.map((src, index) => (
-                    <div key={index} className="editar-ruta-preview-item">
-                      <img src={src} className="editar-ruta-preview-img" alt="" />
-                      <button
-                        onClick={() => removeNewImage(index)}
-                        className="editar-ruta-remove-preview"
-                      >×</button>
+              {fotosGrid.length > 0 && (
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEndPhotos}>
+                  <SortableContext items={fotosGrid.map(p => p.id)} strategy={rectSortingStrategy}>
+                    <div className="editar-ruta-fotos-grid">
+                      {fotosGrid.map((p) => (
+                        <SortablePhoto key={p.id} photo={p} removePhoto={removePhoto} />
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </SortableContext>
+                </DndContext>
               )}
 
               <div className="editar-ruta-distance-box">

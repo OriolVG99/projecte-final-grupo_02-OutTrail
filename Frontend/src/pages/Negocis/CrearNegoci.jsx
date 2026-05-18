@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import axios from "axios";
 import Spinner from "../../components/Spinner.jsx";
 import Message from "../../components/Message.jsx";
@@ -8,6 +8,45 @@ import "./CrearNegoci.css";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  useSortable
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+const SortablePhoto = memo(function SortablePhoto({ photo, removePhoto }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: photo.id
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        touchAction: 'none'
+      }}
+      className="crear-negoci-preview-item"
+    >
+      <img src={photo.preview} className="crear-negoci-preview-img" {...attributes} {...listeners} alt="" />
+      <button 
+        type="button"
+        onClick={(e) => { e.stopPropagation(); removePhoto(photo.id); }}
+        className="crear-negoci-remove-foto-btn"
+      >✕</button>
+    </div>
+  );
+});
 
 const markerIcon = L.icon({
   iconUrl: "/iconoverde.png",
@@ -64,13 +103,16 @@ export default function CrearNegoci() {
   const [tipus, setTipus] = useState("");
   const [descripcio, setDescripcio] = useState("");
   const [latLng, setLatLng] = useState({ lat: "", lng: "" });
-  const [fotos, setFotos] = useState([]);
-  const [previewUrls, setPreviewUrls] = useState([]);
+  const [latLng, setLatLng] = useState({ lat: "", lng: "" });
+  const [fotosGrid, setFotosGrid] = useState([]);
   const [loading, setLoading] = useState(false);
   const [mapType, setMapType] = useState("satellite");
   const [userLocation, setUserLocation] = useState(null);
   const [hasLocationPermission, setHasLocationPermission] = useState(false);
   const [mapInstance, setMapInstance] = useState(null);
+  
+  const fileInputRef = useRef(null);
+  const sensors = useSensors(useSensor(PointerSensor));
 
   const [messageOpen, setMessageOpen] = useState(false);
   const [messageText, setMessageText] = useState("");
@@ -118,14 +160,27 @@ export default function CrearNegoci() {
     }
 
     if (validFiles.length > 0) {
-      setFotos(prev => [...prev, ...validFiles]);
-      setPreviewUrls(prev => [...prev, ...validFiles.map(f => URL.createObjectURL(f))]);
+      const newItems = validFiles.map(file => ({
+        id: `new-${Date.now()}-${Math.random()}`,
+        file,
+        preview: URL.createObjectURL(file)
+      }));
+      setFotosGrid(prev => [...prev, ...newItems]);
     }
   };
 
-  const removeFoto = (index) => {
-    setFotos(prev => prev.filter((_, i) => i !== index));
-    setPreviewUrls(prev => prev.filter((_, i) => i !== index));
+  const removeFoto = (id) => {
+    setFotosGrid(prev => prev.filter(f => f.id !== id));
+  };
+
+  const onDragEndPhotos = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setFotosGrid(prev => {
+      const oldIndex = prev.findIndex(p => p.id === active.id);
+      const newIndex = prev.findIndex(p => p.id === over.id);
+      return arrayMove(prev, oldIndex, newIndex);
+    });
   };
 
   const allowOnlyNumbers = (e) => {
@@ -167,14 +222,14 @@ export default function CrearNegoci() {
       form.append("descripcio", descripcio);
       form.append("latitud", Number(latLng.lat));
       form.append("longitud", Number(latLng.lng));
-      const totalSize = fotos.reduce((acc, f) => acc + f.size, 0);
+      const totalSize = fotosGrid.reduce((acc, f) => acc + f.file.size, 0);
       if (totalSize > 4.5 * 1024 * 1024) {
         showMessage("El conjunt d'imatges és massa gran per al servidor (més de 4.5MB total). Si us plau, redueix el nombre o qualitat de les fotos.", "yellow");
         setLoading(false);
         return;
       }
 
-      for (let f of fotos) form.append("fotos", f);
+      for (let f of fotosGrid) form.append("fotos", f.file);
       const res = await axios.post("/api/negocis", form, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
       });
@@ -259,18 +314,30 @@ export default function CrearNegoci() {
           </div>
           <div className="crear-negoci-section">
             <h2 className="crear-negoci-section-title">Fotos</h2>
-            <label className="crear-negoci-file-input-label">Seleccionar fotos
-              <input type="file" multiple onChange={onFotosChange} className="crear-negoci-file-input" />
-            </label>
-            {previewUrls.length > 0 && (
-              <div className="crear-negoci-preview-grid">
-                {previewUrls.map((url, idx) => (
-                  <div key={idx} className="crear-negoci-preview-item">
-                    <img src={url} className="crear-negoci-preview-img" />
-                    <button type="button" className="crear-negoci-remove-foto-btn" onClick={() => removeFoto(idx)}>✕</button>
+            <div 
+              className="crear-negoci-dropzone"
+              onClick={() => fileInputRef.current.click()}
+            >
+              <p className="crear-negoci-dropzone-text">Prem per afegir fotos del negoci</p>
+              <input 
+                type="file" 
+                multiple 
+                accept="image/*" 
+                ref={fileInputRef} 
+                style={{ display: "none" }} 
+                onChange={onFotosChange} 
+              />
+            </div>
+            {fotosGrid.length > 0 && (
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEndPhotos}>
+                <SortableContext items={fotosGrid.map(p => p.id)} strategy={rectSortingStrategy}>
+                  <div className="crear-negoci-preview-grid">
+                    {fotosGrid.map((p) => (
+                      <SortablePhoto key={p.id} photo={p} removePhoto={removeFoto} />
+                    ))}
                   </div>
-                ))}
-              </div>
+                </SortableContext>
+              </DndContext>
             )}
           </div>
           <div className="crear-negoci-actions-row">

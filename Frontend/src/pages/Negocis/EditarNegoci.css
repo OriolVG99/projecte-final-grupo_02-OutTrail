@@ -112,18 +112,20 @@
   object-fit: cover;
 }
 
-.editar-negoci-file-input-label {
-  background: #004c06;
-  color: white;
-  padding: 8px 15px;
+.editar-negoci-dropzone {
+  border: 2px dashed #ccc;
+  padding: 15px;
+  text-align: center;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-  display: inline-block;
+  background: white;
+  margin-bottom: 10px;
 }
 
-.editar-negoci-file-input {
-  display: none;
+.editar-negoci-dropzone-text {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
 }
 
 .editar-negoci-preview-grid {

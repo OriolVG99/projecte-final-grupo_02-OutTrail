@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, memo } from "react";
 import axios from "axios";
 import Spinner from "../../components/Spinner.jsx";
 import Message from "../../components/Message.jsx";
@@ -9,6 +9,45 @@ import "./EditarNegoci.css";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  useSortable
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
+const SortablePhoto = memo(function SortablePhoto({ photo, removePhoto }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: photo.id
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        touchAction: 'none'
+      }}
+      className="editar-negoci-preview-item"
+    >
+      <img src={photo.preview || photo.url} className="editar-negoci-preview-img" {...attributes} {...listeners} alt="" />
+      <button 
+        type="button"
+        onClick={(e) => { e.stopPropagation(); removePhoto(photo.id); }}
+        className="editar-negoci-remove-foto-btn"
+      >✕</button>
+    </div>
+  );
+});
 
 const defaultIcon = L.icon({
   iconUrl: "/iconoverde.png",
@@ -60,13 +99,14 @@ export default function EditarNegoci() {
   const [tipus, setTipus] = useState("");
   const [descripcio, setDescripcio] = useState("");
   const [latLng, setLatLng] = useState({ lat: "", lng: "" });
-  const [existingFotos, setExistingFotos] = useState([]);
-  const [newFotos, setNewFotos] = useState([]);
-  const [newPreviewUrls, setNewPreviewUrls] = useState([]);
+  const [fotosGrid, setFotosGrid] = useState([]);
   const [loading, setLoading] = useState(true);
   const [globalLoading, setGlobalLoading] = useState(false);
   const [mapType, setMapType] = useState("satellite");
   const [mapInstance, setMapInstance] = useState(null);
+  
+  const fileInputRef = useRef(null);
+  const sensors = useSensors(useSensor(PointerSensor));
 
   const [messageOpen, setMessageOpen] = useState(false);
   const [messageText, setMessageText] = useState("");
@@ -89,7 +129,16 @@ export default function EditarNegoci() {
         setTipus(n.tipus || "");
         setDescripcio(n.descripcio || "");
         if (n.latitud && n.longitud) setLatLng({ lat: n.latitud, lng: n.longitud });
-        setExistingFotos(n.fotos ? n.fotos.split(",").map(f => f.trim()).filter(Boolean) : []);
+        if (n.fotos) {
+          const files = n.fotos.split(",").map(f => f.trim()).filter(Boolean);
+          const mapped = files.map(f => ({
+             id: f,
+             type: 'existing',
+             url: f.startsWith('http') ? f : `/uploads/${f}`,
+             filename: f
+          }));
+          setFotosGrid(mapped);
+        }
       } catch (err) {
         console.error(err);
         showMessage("Error carregant negoci");
@@ -120,24 +169,29 @@ export default function EditarNegoci() {
     }
 
     if (validFiles.length > 0) {
-      setNewFotos(prev => [...prev, ...validFiles]);
-      setNewPreviewUrls(prev => [...prev, ...validFiles.map(f => URL.createObjectURL(f))]);
+      const newItems = validFiles.map(file => ({
+        id: `new-${Date.now()}-${Math.random()}`,
+        type: 'new',
+        file,
+        preview: URL.createObjectURL(file)
+      }));
+      setFotosGrid(prev => [...prev, ...newItems]);
     }
   };
 
-  const removeExistingFoto = (index) => setExistingFotos(prev => prev.filter((_, i) => i !== index));
-
-  const removeNewFoto = (index) => {
-    setNewFotos(prev => prev.filter((_, i) => i !== index));
-    setNewPreviewUrls(prev => {
-      URL.revokeObjectURL(prev[index]);
-      return prev.filter((_, i) => i !== index);
-    });
+  const removePhoto = (id) => {
+    setFotosGrid(prev => prev.filter(f => f.id !== id));
   };
 
-  useEffect(() => {
-    return () => newPreviewUrls.forEach(url => URL.revokeObjectURL(url));
-  }, [newPreviewUrls]);
+  const onDragEndPhotos = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setFotosGrid(prev => {
+      const oldIndex = prev.findIndex(p => p.id === active.id);
+      const newIndex = prev.findIndex(p => p.id === over.id);
+      return arrayMove(prev, oldIndex, newIndex);
+    });
+  };
 
   const allowOnlyNumbers = (e) => {
     const allowed = ["0","1","2","3","4","5","6","7","8","9",".",",","-","Backspace","Delete","ArrowLeft","ArrowRight","Tab"];
@@ -175,19 +229,26 @@ export default function EditarNegoci() {
       form.append("zona", zona);
       form.append("tipus", tipus);
       form.append("descripcio", descripcio);
-      form.append("existingFotos", JSON.stringify(existingFotos));
+      
+      const existingToKeep = fotosGrid.filter(f => f.type === 'existing').map(f => f.filename);
+      const ordenFotos = fotosGrid.map(f => f.type);
+      
+      form.append("existingFotos", JSON.stringify(existingToKeep));
+      form.append("ordenFotos", JSON.stringify(ordenFotos));
       if (latLng.lat && latLng.lng) {
         form.append("latitud", Number(latLng.lat));
         form.append("longitud", Number(latLng.lng));
       }
-      const totalSize = newFotos.reduce((acc, f) => acc + f.size, 0);
+      
+      const newFiles = fotosGrid.filter(f => f.type === 'new');
+      const totalSize = newFiles.reduce((acc, f) => acc + f.file.size, 0);
       if (totalSize > 4.5 * 1024 * 1024) {
         showMessage("El conjunt de noves imatges és massa gran per al servidor (més de 4.5MB total). Si us plau, redueix el nombre o qualitat de les fotos.", "yellow");
         setGlobalLoading(false);
         return;
       }
 
-      newFotos.forEach(f => form.append("fotos", f));
+      newFiles.forEach(f => form.append("fotos", f.file));
       await axios.put(`/api/negocis/${id}`, form, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" }
       });
@@ -267,31 +328,30 @@ export default function EditarNegoci() {
           </div>
           <div className="editar-negoci-section">
             <h2 className="editar-negoci-section-title">Fotos</h2>
-            {existingFotos.length > 0 && (
-              <div style={{ marginBottom: "20px" }}>
-                <p style={{ fontSize: "14px", marginBottom: "8px", fontWeight: "bold" }}>Fotos actuals:</p>
-                <div className="editar-negoci-preview-grid">
-                  {existingFotos.map((f, idx) => (
-                    <div key={idx} className="editar-negoci-preview-item">
-                      <img src={f?.startsWith('http') ? f : `/uploads/${f}`} alt="" className="editar-negoci-preview-img" />
-                      <button type="button" className="editar-negoci-remove-foto-btn" onClick={() => removeExistingFoto(idx)}>✕</button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            <label className="editar-negoci-file-input-label">+ Afegir fotos noves
-              <input type="file" multiple onChange={onNewFotosChange} className="editar-negoci-file-input" />
-            </label>
-            {newPreviewUrls.length > 0 && (
-              <div className="editar-negoci-preview-grid">
-                {newPreviewUrls.map((url, idx) => (
-                  <div key={idx} className="editar-negoci-preview-item">
-                    <img src={url} alt="" className="editar-negoci-preview-img" />
-                    <button type="button" className="editar-negoci-remove-foto-btn" onClick={() => removeNewFoto(idx)}>✕</button>
+            <div 
+              className="editar-negoci-dropzone"
+              onClick={() => fileInputRef.current.click()}
+            >
+              <p className="editar-negoci-dropzone-text">Prem per afegir més imatges</p>
+              <input 
+                type="file" 
+                multiple 
+                accept="image/*" 
+                ref={fileInputRef} 
+                style={{ display: "none" }} 
+                onChange={onNewFotosChange} 
+              />
+            </div>
+            {fotosGrid.length > 0 && (
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEndPhotos}>
+                <SortableContext items={fotosGrid.map(p => p.id)} strategy={rectSortingStrategy}>
+                  <div className="editar-negoci-preview-grid">
+                    {fotosGrid.map((p) => (
+                      <SortablePhoto key={p.id} photo={p} removePhoto={removePhoto} />
+                    ))}
                   </div>
-                ))}
-              </div>
+                </SortableContext>
+              </DndContext>
             )}
           </div>
           <div className="editar-negoci-actions-row">

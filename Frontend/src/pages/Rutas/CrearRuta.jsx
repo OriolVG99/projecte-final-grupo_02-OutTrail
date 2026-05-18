@@ -20,7 +20,8 @@ import {
   SortableContext,
   verticalListSortingStrategy,
   useSortable,
-  arrayMove
+  arrayMove,
+  rectSortingStrategy
 } from "@dnd-kit/sortable";
 
 import { CSS } from "@dnd-kit/utilities";
@@ -165,6 +166,30 @@ const SortablePunt = memo(function SortablePunt({ punt, setPunts, puntRefs, sele
   );
 });
 
+const SortablePhoto = memo(function SortablePhoto({ photo, removePhoto }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: photo.id
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        touchAction: 'none'
+      }}
+      className="mapa-crear-ruta-preview-item"
+    >
+      <img src={photo.preview} className="mapa-crear-ruta-preview-img" {...attributes} {...listeners} alt="" />
+      <button 
+        onClick={(e) => { e.stopPropagation(); removePhoto(photo.id); }}
+        className="mapa-crear-ruta-remove-preview"
+      >×</button>
+    </div>
+  );
+});
+
 export default function CrearRuta() {
   const { user, token, loading } = useAuth();
   const navigate = useNavigate();
@@ -177,8 +202,7 @@ export default function CrearRuta() {
   const [dificultat, setDificultat] = useState("");
   const [distancia, setDistancia] = useState("");
   
-  const [imageFiles, setImageFiles] = useState([]);
-  const [previews, setPreviews] = useState([]);
+  const [fotosGrid, setFotosGrid] = useState([]);
 
   const [geometry, setGeometry] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -329,15 +353,17 @@ export default function CrearRuta() {
     }
 
     if (validFiles.length > 0) {
-      setImageFiles(prev => [...prev, ...validFiles]);
-      const newPreviews = validFiles.map(file => URL.createObjectURL(file));
-      setPreviews(prev => [...prev, ...newPreviews]);
+      const newItems = validFiles.map(file => ({
+        id: `new-${Date.now()}-${Math.random()}`,
+        file,
+        preview: URL.createObjectURL(file)
+      }));
+      setFotosGrid(prev => [...prev, ...newItems]);
     }
   };
 
-  const removeImage = (index) => {
-    setImageFiles(prev => prev.filter((_, i) => i !== index));
-    setPreviews(prev => prev.filter((_, i) => i !== index));
+  const removeImage = (id) => {
+    setFotosGrid(prev => prev.filter(f => f.id !== id));
   };
 
   const sensors = useSensors(useSensor(PointerSensor));
@@ -346,6 +372,16 @@ export default function CrearRuta() {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
     setPunts(prev => {
+      const oldIndex = prev.findIndex(p => p.id === active.id);
+      const newIndex = prev.findIndex(p => p.id === over.id);
+      return arrayMove(prev, oldIndex, newIndex);
+    });
+  };
+
+  const onDragEndPhotos = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setFotosGrid(prev => {
       const oldIndex = prev.findIndex(p => p.id === active.id);
       const newIndex = prev.findIndex(p => p.id === over.id);
       return arrayMove(prev, oldIndex, newIndex);
@@ -384,7 +420,7 @@ export default function CrearRuta() {
     formData.append("distancia_km", distancia);
     formData.append("punts", JSON.stringify(punts));
     if (geometry) formData.append("geojson", JSON.stringify(geometry));
-    const totalSize = imageFiles.reduce((acc, f) => acc + f.size, 0);
+    const totalSize = fotosGrid.reduce((acc, f) => acc + f.file.size, 0);
     if (totalSize > 4.5 * 1024 * 1024) {
       setMsg({ 
         title: "Atenció", 
@@ -395,8 +431,8 @@ export default function CrearRuta() {
       return;
     }
 
-    imageFiles.forEach(file => {
-      formData.append("fotos", file);
+    fotosGrid.forEach(f => {
+      formData.append("fotos", f.file);
     });
 
     try {
@@ -492,17 +528,15 @@ export default function CrearRuta() {
                 />
               </div>
 
-              <div className="mapa-crear-ruta-previews-container">
-                {previews.map((src, index) => (
-                  <div key={index} className="mapa-crear-ruta-preview-item">
-                    <img src={src} className="mapa-crear-ruta-preview-img" />
-                    <button 
-                      onClick={() => removeImage(index)}
-                      className="mapa-crear-ruta-remove-preview"
-                    >×</button>
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEndPhotos}>
+                <SortableContext items={fotosGrid.map(p => p.id)} strategy={rectSortingStrategy}>
+                  <div className="mapa-crear-ruta-previews-container">
+                    {fotosGrid.map((p) => (
+                      <SortablePhoto key={p.id} photo={p} removePhoto={removeImage} />
+                    ))}
                   </div>
-                ))}
-              </div>
+                </SortableContext>
+              </DndContext>
 
               <div className="mapa-crear-ruta-distance-box">
                   <strong>Distància total:</strong> {distancia || "0.00"} km

@@ -557,7 +557,26 @@ router.put('/rutes/:id', authMiddleware, upload.array('fotos'), async (req, res)
     try { fotosExistents = JSON.parse(existingFotos || '[]'); } catch { fotosExistents = []; }
 
     const novesFotos = req.files ? req.files.map(f => f.path) : [];
-    const fotosFinals = [...fotosExistents, ...novesFotos];
+    
+    let fotosFinals = [];
+    const ordenFotosRaw = req.body.ordenFotos;
+    if (ordenFotosRaw) {
+      let ordenFotos = [];
+      try { ordenFotos = JSON.parse(ordenFotosRaw); } catch { ordenFotos = []; }
+      let newFotoIdx = 0;
+      let existingFotoIdx = 0;
+      ordenFotos.forEach(type => {
+         if (type === 'new' && newFotoIdx < novesFotos.length) {
+            fotosFinals.push(novesFotos[newFotoIdx++]);
+         } else if (type === 'existing' && existingFotoIdx < fotosExistents.length) {
+            fotosFinals.push(fotosExistents[existingFotoIdx++]);
+         }
+      });
+      while (existingFotoIdx < fotosExistents.length) fotosFinals.push(fotosExistents[existingFotoIdx++]);
+      while (newFotoIdx < novesFotos.length) fotosFinals.push(novesFotos[newFotoIdx++]);
+    } else {
+      fotosFinals = [...fotosExistents, ...novesFotos];
+    }
 
     // (Gestió d'esborrat de Cloudinary es podria implementar aquí)
 
@@ -1637,10 +1656,28 @@ router.put('/negocis/:id', authMiddleware, upload.array('fotos'), async (req, re
       ? req.files.map(f => f.path)
       : [];
 
-    const fotosFinals = [
-      ...fotosExistents,
-      ...novesFotos
-    ];
+    let fotosFinals = [];
+    const ordenFotosRaw = req.body.ordenFotos;
+    if (ordenFotosRaw) {
+      let ordenFotos = [];
+      try { ordenFotos = JSON.parse(ordenFotosRaw); } catch { ordenFotos = []; }
+      let newFotoIdx = 0;
+      let existingFotoIdx = 0;
+      ordenFotos.forEach(type => {
+         if (type === 'new' && newFotoIdx < novesFotos.length) {
+            fotosFinals.push(novesFotos[newFotoIdx++]);
+         } else if (type === 'existing' && existingFotoIdx < fotosExistents.length) {
+            fotosFinals.push(fotosExistents[existingFotoIdx++]);
+         }
+      });
+      while (existingFotoIdx < fotosExistents.length) fotosFinals.push(fotosExistents[existingFotoIdx++]);
+      while (newFotoIdx < novesFotos.length) fotosFinals.push(novesFotos[newFotoIdx++]);
+    } else {
+      fotosFinals = [
+        ...fotosExistents,
+        ...novesFotos
+      ];
+    }
 
     //Update
     await negoci.update({
