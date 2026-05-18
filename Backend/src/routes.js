@@ -1615,6 +1615,11 @@ router.put('/negocis/:id', authMiddleware, upload.array('fotos'), async (req, re
     }
 
     const {
+      nom,
+      tipus,
+      descripcio,
+      zona,
+      latitud,
       longitud,
       existingFotos
     } = req.body;
