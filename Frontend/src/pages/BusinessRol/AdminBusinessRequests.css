@@ -64,9 +64,11 @@
 
 .admin-business-requests-info {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
   flex: 1;
+  min-width: 0;
 }
 
 .admin-business-requests-text-row {
@@ -75,17 +77,33 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
+}
+
+.admin-business-requests-text-row:nth-child(1) {
+  flex: 1;
+}
+
+.admin-business-requests-text-row:nth-child(2) {
+  flex: 1;
+}
+
+.admin-business-requests-text-row:nth-child(3) {
+  flex: 1.5;
 }
 
 .admin-business-requests-text-row strong {
   color: #222;
   font-weight: 700;
-  min-width: 90px;
+  min-width: auto;
 }
 
 .admin-business-requests-text-row span {
   color: #555;
   word-break: break-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .admin-business-requests-buttons {
@@ -177,10 +195,22 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    width: 100%;
+  }
+
+  .admin-business-requests-text-row:nth-child(1),
+  .admin-business-requests-text-row:nth-child(2),
+  .admin-business-requests-text-row:nth-child(3) {
+    flex: none;
   }
   
   .admin-business-requests-text-row strong {
     min-width: 90px;
+  }
+
+  .admin-business-requests-text-row span {
+    white-space: normal;
+    word-break: break-all;
   }
   
   .admin-business-requests-buttons {
