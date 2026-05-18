@@ -163,33 +163,33 @@
     flex-direction: row;
     align-items: center;
     gap: 15px;
+    flex-wrap: wrap;
   }
   
   .admin-business-requests-info {
     flex: 1;
-    min-width: 0;
+    min-width: 200px;
   }
 
   .admin-business-requests-text-row {
-    align-items: flex-start;
-    font-size: 13px;
+    font-size: 14px;
+    align-items: center;
   }
   
   .admin-business-requests-text-row strong {
-    min-width: 70px;
+    min-width: 80px;
   }
   
   .admin-business-requests-buttons {
-    flex-direction: column;
+    flex-direction: row;
     gap: 8px;
     flex-shrink: 0;
   }
 
   .admin-business-requests-accept-btn,
   .admin-business-requests-reject-btn {
-    width: 100%;
+    width: auto;
     padding: 6px 12px;
     font-size: 13px;
-    white-space: nowrap;
   }
 }

@@ -314,7 +314,7 @@ export default function EditarNegoci() {
             <div className="editar-negoci-map-box">
               <div style={{ position: "relative", width: "100%", height: "450px" }}>
                 <MapContainer whenCreated={setMapInstance} center={[latLng.lat || 41.226, latLng.lng || 1.725]} zoom={15} maxZoom={19} style={{ height: "100%", width: "100%" }}>
-                  <TileLayer url={mapLayers[mapType]} maxNativeZoom={mapType === "topo" ? 17 : 17} maxZoom={19} noWrap={true} />
+                  <TileLayer url={mapLayers[mapType]} maxNativeZoom={mapType === "topo" ? 17 : 19} maxZoom={17} noWrap={true} />
                   <ClickHandler setLatLng={setLatLng} onZonaAuto={setZona} />
                   {latLng.lat && latLng.lng && <Marker position={[Number(latLng.lat), Number(latLng.lng)]} icon={defaultIcon} />}
                 </MapContainer>

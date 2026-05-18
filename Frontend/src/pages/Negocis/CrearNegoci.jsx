@@ -296,7 +296,7 @@ export default function CrearNegoci() {
                   maxBoundsViscosity={1.0}
                   style={{ height: "100%", width: "100%" }}
                 >
-                  <TileLayer url={mapLayers[mapType]} maxNativeZoom={mapType === "topo" ? 17 : 17} maxZoom={19} noWrap={true} />
+                  <TileLayer url={mapLayers[mapType]} maxNativeZoom={mapType === "topo" ? 17 : 19} maxZoom={17} noWrap={true} />
                   <ClickHandler setLatLng={setLatLng} onZonaAuto={setZona} />
                   {latLng.lat !== "" && latLng.lng !== "" && !isNaN(Number(latLng.lat)) && !isNaN(Number(latLng.lng)) && (
                     <Marker position={[Number(latLng.lat), Number(latLng.lng)]} icon={markerIcon} />
