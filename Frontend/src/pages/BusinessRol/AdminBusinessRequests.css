@@ -160,31 +160,36 @@
 
 @media (max-width: 768px) {
   .admin-business-requests-row-main {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: 15px;
   }
   
   .admin-business-requests-info {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
   }
 
   .admin-business-requests-text-row {
     align-items: flex-start;
+    font-size: 13px;
   }
   
   .admin-business-requests-text-row strong {
-    min-width: 80px;
+    min-width: 70px;
   }
   
   .admin-business-requests-buttons {
-    width: 100%;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
+    flex-shrink: 0;
   }
 
   .admin-business-requests-accept-btn,
   .admin-business-requests-reject-btn {
     width: 100%;
+    padding: 6px 12px;
+    font-size: 13px;
+    white-space: nowrap;
   }
 }
