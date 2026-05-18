@@ -516,6 +516,14 @@ export default function CrearRuta() {
               <div 
                 className="mapa-crear-ruta-dropzone"
                 onClick={() => fileInputRef.current.click()}
+                onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    handleFileChange({ target: { files: e.dataTransfer.files } });
+                  }
+                }}
               >
                 <p className="mapa-crear-ruta-dropzone-text">Prem per pujar imatges</p>
                 <input 

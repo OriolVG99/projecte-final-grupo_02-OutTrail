@@ -316,6 +316,14 @@ export default function CrearNegoci() {
             <div 
               className="crear-negoci-dropzone"
               onClick={() => fileInputRef.current.click()}
+              onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                  onFotosChange({ target: { files: e.dataTransfer.files } });
+                }
+              }}
             >
               <p className="crear-negoci-dropzone-text">Prem per afegir fotos del negoci</p>
               <input 

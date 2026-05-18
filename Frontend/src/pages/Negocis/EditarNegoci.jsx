@@ -331,6 +331,14 @@ export default function EditarNegoci() {
             <div 
               className="editar-negoci-dropzone"
               onClick={() => fileInputRef.current.click()}
+              onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                  onNewFotosChange({ target: { files: e.dataTransfer.files } });
+                }
+              }}
             >
               <p className="editar-negoci-dropzone-text">Prem per afegir més imatges</p>
               <input 

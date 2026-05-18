@@ -602,6 +602,14 @@ export default function EditarRuta() {
               <div
                 className="editar-ruta-dropzone"
                 onClick={() => fileInputRef.current.click()}
+                onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    handleFileChange({ target: { files: e.dataTransfer.files } });
+                  }
+                }}
               >
                 <p className="editar-ruta-dropzone-text">Prem per afegir més imatges</p>
                 <input
