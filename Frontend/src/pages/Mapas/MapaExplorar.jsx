@@ -267,17 +267,37 @@ export default function MapaExplorar() {
   const [msg, setMsg] = useState(null);
 
   const [tab, setTab] = useState("rutes");
+  
+  // Rutes states
   const [dificultat, setDificultat] = useState("");
+  const [appliedDificultat, setAppliedDificultat] = useState("");
+  
   const [maxDistanciaDB, setMaxDistanciaDB] = useState(null);
+  
   const [maxKm, setMaxKm] = useState(null);
+  const [appliedMaxKm, setAppliedMaxKm] = useState(null);
+  
   const [minRating, setMinRating] = useState(0);
-  const [minRatingNegoci, setMinRatingNegoci] = useState(0);
+  const [appliedMinRating, setAppliedMinRating] = useState(0);
+  
   const [nomésFavoritsRutes, setNomésFavoritsRutes] = useState(false);
+  const [appliedNomésFavoritsRutes, setAppliedNomésFavoritsRutes] = useState(false);
+  
   const [nomésMevesRutes, setNomésMevesRutes] = useState(false);
+  const [appliedNomésMevesRutes, setAppliedNomésMevesRutes] = useState(false);
 
+  // Negocis states
   const [tipusNegoci, setTipusNegoci] = useState("");
+  const [appliedTipusNegoci, setAppliedTipusNegoci] = useState("");
+  
+  const [minRatingNegoci, setMinRatingNegoci] = useState(0);
+  const [appliedMinRatingNegoci, setAppliedMinRatingNegoci] = useState(0);
+  
   const [nomésFavoritsNegocis, setNomésFavoritsNegocis] = useState(false);
+  const [appliedNomésFavoritsNegocis, setAppliedNomésFavoritsNegocis] = useState(false);
+  
   const [nomésMeusNegocis, setNomésMeusNegocis] = useState(false);
+  const [appliedNomésMeusNegocis, setAppliedNomésMeusNegocis] = useState(false);
 
   const [favRutes, setFavRutes] = useState(new Set());
   const [favNegocis, setFavNegocis] = useState(new Set());
@@ -289,7 +309,19 @@ export default function MapaExplorar() {
 //Persistencia de l'estat del mapa per recuperarlo en tornar de la vista de detall
   const saveMapState = (openedPopup = null) => {
     const state = {
-      tab, dificultat, maxKm, minRating, minRatingNegoci, isSidebarVisible, seleccio, openedPopup,
+      tab,
+      dificultat: appliedDificultat,
+      maxKm: appliedMaxKm,
+      minRating: appliedMinRating,
+      minRatingNegoci: appliedMinRatingNegoci,
+      nomésFavoritsRutes: appliedNomésFavoritsRutes,
+      nomésMevesRutes: appliedNomésMevesRutes,
+      tipusNegoci: appliedTipusNegoci,
+      nomésFavoritsNegocis: appliedNomésFavoritsNegocis,
+      nomésMeusNegocis: appliedNomésMeusNegocis,
+      isSidebarVisible,
+      seleccio,
+      openedPopup,
       center: mapInstance?.getCenter(),
       zoom: mapInstance?.getZoom()
     };
@@ -330,7 +362,7 @@ export default function MapaExplorar() {
     } catch (err) { console.error(err); }
   }, [token]);
 
-  const fetchData = useCallback(async (silent = false) => {
+  const fetchData = useCallback(async (silent = false, customParams = null) => {
     if (!silent) {
       setLoading(true);
       setSeleccio(null);
@@ -338,16 +370,22 @@ export default function MapaExplorar() {
       setParadesRuta([]);
     }
 
+    const queryDificultat = customParams ? customParams.dificultat : appliedDificultat;
+    const queryMaxKm = customParams ? customParams.maxKm : appliedMaxKm;
+    const queryMinRating = customParams ? customParams.minRating : appliedMinRating;
+    const queryMinRatingNegoci = customParams ? customParams.minRatingNegoci : appliedMinRatingNegoci;
+    const queryTipusNegoci = customParams ? customParams.tipusNegoci : appliedTipusNegoci;
+
     try {
       const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 
       const [resRutes, resNegocis] = await Promise.all([
         axios.get("/api/rutes-map", {
           ...config,
-          params: { dificultat, maxKm: maxKm || 9999, minRating }
+          params: { dificultat: queryDificultat, maxKm: queryMaxKm || 9999, minRating: queryMinRating }
         }),
         axios.get("/api/negocis-explora", {
-          params: { tipus: tipusNegoci, minRating: minRatingNegoci }
+          params: { tipus: queryTipusNegoci, minRating: queryMinRatingNegoci }
         })
       ]);
 
@@ -360,7 +398,27 @@ export default function MapaExplorar() {
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [token, user, dificultat, maxKm, minRating, minRatingNegoci, tipusNegoci]);
+  }, [token, user, appliedDificultat, appliedMaxKm, appliedMinRating, appliedMinRatingNegoci, appliedTipusNegoci]);
+
+  const aplicarFiltres = () => {
+    setAppliedDificultat(dificultat);
+    setAppliedMaxKm(maxKm);
+    setAppliedMinRating(minRating);
+    setAppliedMinRatingNegoci(minRatingNegoci);
+    setAppliedTipusNegoci(tipusNegoci);
+    setAppliedNomésFavoritsRutes(nomésFavoritsRutes);
+    setAppliedNomésMevesRutes(nomésMevesRutes);
+    setAppliedNomésFavoritsNegocis(nomésFavoritsNegocis);
+    setAppliedNomésMeusNegocis(nomésMeusNegocis);
+
+    fetchData(false, {
+      dificultat,
+      maxKm,
+      minRating,
+      minRatingNegoci,
+      tipusNegoci
+    });
+  };
 
   useEffect(() => {
     const watch = navigator.geolocation.watchPosition(
@@ -371,7 +429,10 @@ export default function MapaExplorar() {
     axios.get("/api/rutes-max-km").then(res => {
       const mk = res.data.maxKm || 100;
       setMaxDistanciaDB(mk);
-      if (!sessionStorage.getItem('outtrail_map_state')) setMaxKm(mk);
+      if (!sessionStorage.getItem('outtrail_map_state')) {
+        setMaxKm(mk);
+        setAppliedMaxKm(mk);
+      }
     }).catch(() => {});
 
     const savedState = sessionStorage.getItem('outtrail_map_state');
@@ -379,10 +440,34 @@ export default function MapaExplorar() {
       try {
         const state = JSON.parse(savedState);
         setTab(state.tab || "rutes");
+        
         setDificultat(state.dificultat || "");
+        setAppliedDificultat(state.dificultat || "");
+        
         setMaxKm(state.maxKm);
+        setAppliedMaxKm(state.maxKm);
+        
         setMinRating(state.minRating || 0);
+        setAppliedMinRating(state.minRating || 0);
+        
         setMinRatingNegoci(state.minRatingNegoci || 0);
+        setAppliedMinRatingNegoci(state.minRatingNegoci || 0);
+        
+        setNomésFavoritsRutes(state.nomésFavoritsRutes || false);
+        setAppliedNomésFavoritsRutes(state.nomésFavoritsRutes || false);
+        
+        setNomésMevesRutes(state.nomésMevesRutes || false);
+        setAppliedNomésMevesRutes(state.nomésMevesRutes || false);
+        
+        setTipusNegoci(state.tipusNegoci || "");
+        setAppliedTipusNegoci(state.tipusNegoci || "");
+        
+        setNomésFavoritsNegocis(state.nomésFavoritsNegocis || false);
+        setAppliedNomésFavoritsNegocis(state.nomésFavoritsNegocis || false);
+        
+        setNomésMeusNegocis(state.nomésMeusNegocis || false);
+        setAppliedNomésMeusNegocis(state.nomésMeusNegocis || false);
+
         setIsSidebarVisible(state.isSidebarVisible ?? true);
         if (state.seleccio) setSeleccio(state.seleccio);
         
@@ -532,8 +617,8 @@ export default function MapaExplorar() {
 
   const rutesMarkers = useMemo(() => {
     let filtered = rutes;
-    if (nomésFavoritsRutes) filtered = filtered.filter(r => favRutes.has(Number(r.id_ruta)));
-    if (nomésMevesRutes && user) filtered = filtered.filter(r => r.id_usuari == user.id);
+    if (appliedNomésFavoritsRutes) filtered = filtered.filter(r => favRutes.has(Number(r.id_ruta)));
+    if (appliedNomésMevesRutes && user) filtered = filtered.filter(r => r.id_usuari == user.id);
     
     return filtered
       .filter(r => !(seleccio?.type === 'ruta' && r.id_ruta === seleccio.data.id_ruta))
@@ -561,12 +646,12 @@ export default function MapaExplorar() {
           </Marker>
         );
       });
-  }, [rutes, seleccio, user, nomésFavoritsRutes, nomésMevesRutes, nomésFavoritsRutes ? favRutes : null]);
+  }, [rutes, seleccio, user, appliedNomésFavoritsRutes, appliedNomésMevesRutes, appliedNomésFavoritsRutes ? favRutes : null]);
 
   const negocisMarkers = useMemo(() => {
     let filtered = negocis;
-    if (nomésFavoritsNegocis) filtered = filtered.filter(n => favNegocis.has(Number(n.id_negoci)));
-    if (nomésMeusNegocis && user) filtered = filtered.filter(n => n.id_usuari == user.id);
+    if (appliedNomésFavoritsNegocis) filtered = filtered.filter(n => favNegocis.has(Number(n.id_negoci)));
+    if (appliedNomésMeusNegocis && user) filtered = filtered.filter(n => n.id_usuari == user.id);
 
     return filtered
       .filter(n => !(seleccio?.type === 'ruta' && paradesRuta.some(p => p.tipus === 'negoci' && p.nom === n.nom)))
@@ -593,7 +678,7 @@ export default function MapaExplorar() {
           </Marker>
         );
       });
-  }, [negocis, seleccio, paradesRuta, user, nomésFavoritsNegocis, nomésMeusNegocis, nomésFavoritsNegocis ? favNegocis : null]);
+  }, [negocis, seleccio, paradesRuta, user, appliedNomésFavoritsNegocis, appliedNomésMeusNegocis, appliedNomésFavoritsNegocis ? favNegocis : null]);
 
   if (!userLocation) return <div style={{ height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}><Spinner /></div>;
 
@@ -678,21 +763,25 @@ export default function MapaExplorar() {
                       </div>
                     )}
 
-                    <button onClick={fetchData} className="mapa-explorar-search-btn">Aplicar filtres</button>
+                    <button onClick={aplicarFiltres} className="mapa-explorar-search-btn">Aplicar filtres</button>
                     <button className="mapa-explorar-reset-btn" onClick={() => { 
                       setDificultat(""); 
+                      setAppliedDificultat("");
                       setMaxKm(maxDistanciaDB); 
+                      setAppliedMaxKm(maxDistanciaDB);
                       setMinRating(0); 
+                      setAppliedMinRating(0);
                       setNomésFavoritsRutes(false); 
+                      setAppliedNomésFavoritsRutes(false);
                       setNomésMevesRutes(false);
-                      setLoading(true);
-                      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-                      axios.get("/api/rutes-map", {
-                        ...config,
-                        params: { dificultat: "", maxKm: maxDistanciaDB, minRating: 0 }
-                      }).then(res => {
-                        setRutes(res.data);
-                        setLoading(false);
+                      setAppliedNomésMevesRutes(false);
+                      
+                      fetchData(false, {
+                        dificultat: "",
+                        maxKm: maxDistanciaDB,
+                        minRating: 0,
+                        minRatingNegoci: appliedMinRatingNegoci,
+                        tipusNegoci: appliedTipusNegoci
                       });
                     }}>Reiniciar els filtres</button>
                   </div>
@@ -745,18 +834,23 @@ export default function MapaExplorar() {
                       </div>
                     )}
 
-                    <button onClick={fetchData} className="mapa-explorar-search-btn">Aplicar filtres</button>
+                    <button onClick={aplicarFiltres} className="mapa-explorar-search-btn">Aplicar filtres</button>
                     <button className="mapa-explorar-reset-btn" onClick={() => { 
                       setTipusNegoci(""); 
+                      setAppliedTipusNegoci("");
                       setNomésFavoritsNegocis(false); 
+                      setAppliedNomésFavoritsNegocis(false);
                       setNomésMeusNegocis(false);
+                      setAppliedNomésMeusNegocis(false);
                       setMinRatingNegoci(0);
-                      setLoading(true);
-                      axios.get("/api/negocis-explora", {
-                        params: { tipus: "", minRating: 0 }
-                      }).then(res => {
-                        setNegocis(res.data);
-                        setLoading(false);
+                      setAppliedMinRatingNegoci(0);
+                      
+                      fetchData(false, {
+                        dificultat: appliedDificultat,
+                        maxKm: appliedMaxKm,
+                        minRating: appliedMinRating,
+                        minRatingNegoci: 0,
+                        tipusNegoci: ""
                       });
                     }}>Reiniciar els filtres</button>
                   </div>
