@@ -923,6 +923,7 @@ export default function MapaExplorar() {
               style={{ height: "100%", width: "100%" }} 
               zoomControl={false}
               minZoom={3}
+              maxZoom={19}
               maxBounds={[[-90, -180], [90, 180]]}
             >
               <ChangeView center={userLocation} zoom={hasLocationPermission ? 14 : 6} hasLocationPermission={hasLocationPermission} ignoreAutoCenter={hadSavedStateRef.current} />
@@ -933,6 +934,8 @@ export default function MapaExplorar() {
               <TileLayer 
                 url={mapLayers[mapType].url} 
                 attribution={mapLayers[mapType].attribution} 
+                maxNativeZoom={mapType === "topo" ? 17 : 17}
+                maxZoom={19}
                 noWrap={true}
               />
 

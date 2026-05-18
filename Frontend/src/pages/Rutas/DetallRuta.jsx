@@ -645,6 +645,7 @@ ${coords.map(c => `      <trkpt lat="${c[1]}" lon="${c[0]}"></trkpt>`).join("\n"
             style={{ height: "100%", width: "100%" }}
             zoomControl={false}
             minZoom={3}
+            maxZoom={19}
             maxBounds={[[-90, -180], [90, 180]]}
           >
             <MapResizer isSidebarVisible={isSidebarVisible} />
@@ -655,6 +656,8 @@ ${coords.map(c => `      <trkpt lat="${c[1]}" lon="${c[0]}"></trkpt>`).join("\n"
             <TileLayer
               url={mapLayers[mapType].url}
               attribution={mapLayers[mapType].attribution}
+              maxNativeZoom={mapType === "topo" ? 17 : 17}
+              maxZoom={19}
               noWrap={true}
             />
 

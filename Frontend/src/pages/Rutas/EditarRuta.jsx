@@ -669,6 +669,7 @@ export default function EditarRuta() {
             zoomControl={false}
             style={{ height: "100%", width: "100%" }}
             minZoom={3}
+            maxZoom={19}
             maxBounds={[[-90, -180], [90, 180]]}
           >
             <ChangeView center={mapCenter} zoom={hasLocationPermission ? 13 : 6} />
@@ -677,6 +678,8 @@ export default function EditarRuta() {
             <TileLayer 
               url={mapLayers[mapType].url} 
               attribution={mapLayers[mapType].attribution} 
+              maxNativeZoom={mapType === "topo" ? 17 : 17}
+              maxZoom={19}
               noWrap={true}
             />
             <AfegirPunt />
