@@ -181,6 +181,12 @@
   
   .admin-business-requests-buttons {
     width: 100%;
-    justify-content: flex-end;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .admin-business-requests-accept-btn,
+  .admin-business-requests-reject-btn {
+    width: 100%;
   }
 }
