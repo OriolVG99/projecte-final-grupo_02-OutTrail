@@ -211,6 +211,13 @@ export default function DetallRuta() {
   const [comentari, setComentari] = useState("");
   const [enviantReview, setEnviantReview] = useState(false);
 
+  const fetchReviews = async () => {
+    try {
+      const res = await axios.get(`/api/rutes/${id}/reviews`);
+      setReviews(res.data || []);
+    } catch (err) {}
+  };
+
   const fetchData = async () => {
     try {
       const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
@@ -244,6 +251,19 @@ export default function DetallRuta() {
 
   useEffect(() => {
     fetchData();
+
+    const interval = setInterval(fetchReviews, 5000);
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") fetchReviews();
+    };
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
   }, [id, token]);
 
   useEffect(() => {
@@ -400,6 +420,13 @@ ${coords.map(c => `      <trkpt lat="${c[1]}" lon="${c[0]}"></trkpt>`).join("\n"
   });
 
   const totalPages = Math.ceil(sortedReviews.length / reviewsPerPage);
+
+  useEffect(() => {
+    if (totalPages > 0 && reviewsPage > totalPages) {
+      setReviewsPage(totalPages);
+    }
+  }, [totalPages, reviewsPage]);
+
   const paginatedReviews = sortedReviews.slice((reviewsPage - 1) * reviewsPerPage, reviewsPage * reviewsPerPage);
 
   const toggleMapType = () => {

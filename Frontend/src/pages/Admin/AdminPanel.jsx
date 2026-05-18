@@ -50,52 +50,51 @@ export default function AdminPanel() {
   };
 
   useEffect(() => {
-    if (!authLoading) {
-      const init = async () => {
-        await loadZones();
-        await loadUsers(1);
-        setFullyLoaded(true);
-      };
-      init();
+    if (authLoading) return;
+    loadZones();
+    setFullyLoaded(true);
+  }, [authLoading]);
 
-      const interval = setInterval(() => {
-        loadUsers(page, true);
-      }, 5000);
-
-      const handleFocus = () => {
-        if (document.visibilityState === "visible") {
-          loadUsers(page, true);
-        }
-      };
-      window.addEventListener("focus", handleFocus);
-      document.addEventListener("visibilitychange", handleFocus);
-
-      return () => {
-        clearInterval(interval);
-        window.removeEventListener("focus", handleFocus);
-        document.removeEventListener("visibilitychange", handleFocus);
-      };
+  useEffect(() => {
+    if (fullyLoaded) {
+      loadUsers(page);
     }
-  }, [authLoading, page, search, zona, roleFilter, token]);
+  }, [page, search, zona, roleFilter]);
+
+  useEffect(() => {
+    if (!fullyLoaded || authLoading) return;
+    const interval = setInterval(() => {
+      loadUsers(page, true);
+    }, 5000);
+
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") {
+        loadUsers(page, true);
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
+  }, [authLoading, page, search, zona, roleFilter, token, fullyLoaded]);
 
   const buscar = () => {
     setPage(1);
-    loadUsers(1);
   };
 
   const nextPage = () => {
     if (page * PAGE_SIZE < total) {
-      const newPage = page + 1;
-      setPage(newPage);
-      loadUsers(newPage);
+      setPage(p => p + 1);
     }
   };
 
   const prevPage = () => {
     if (page > 1) {
-      const newPage = page - 1;
-      setPage(newPage);
-      loadUsers(newPage);
+      setPage(p => p - 1);
     }
   };
 

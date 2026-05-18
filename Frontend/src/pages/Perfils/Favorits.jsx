@@ -28,7 +28,10 @@ export default function Favorits() {
   useEffect(() => {
     if (authLoading || !token) return;
     loadFavorits(page, activeTab);
+  }, [token, page, activeTab, authLoading]);
 
+  useEffect(() => {
+    if (authLoading || !token) return;
     const interval = setInterval(() => {
       loadFavorits(page, activeTab, true);
     }, 5000);

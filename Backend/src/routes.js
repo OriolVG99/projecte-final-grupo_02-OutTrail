@@ -959,6 +959,7 @@ router.get('/users', authMiddleware, async (req, res) => {
       where: {
         id_usuari: { [Op.ne]: myId },
         id_role: { [Op.ne]: 3 },
+        validated: true,
         ...roleWhere,
         [Op.and]: [
           {
@@ -1111,7 +1112,7 @@ router.get('/users/:id', authMiddleware, async (req, res) => {
       Usuari.findByPk(targetId, {
         attributes: [
           'id_usuari', 'nom', 'cognoms', 'username', 'email',
-          'zona', 'experiencia', 'foto_perfil', 'id_role', 'sexe', 'data_naixement',
+          'zona', 'experiencia', 'foto_perfil', 'id_role', 'sexe', 'data_naixement', 'validated',
           [
             literal(`EXISTS(
               SELECT 1 FROM seguidors s
@@ -1130,6 +1131,10 @@ router.get('/users/:id', authMiddleware, async (req, res) => {
 
     if (!targetUser) {
       return res.status(404).json({ error: 'Usuari no trobat' });
+    }
+
+    if (!targetUser.validated && targetUser.id_usuari != myId && req.user.role !== 3) {
+      return res.status(403).json({ error: 'Aquest perfil encara no ha estat validat per un administrador' });
     }
 
     res.json({

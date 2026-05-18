@@ -17,6 +17,7 @@ export default function PerfilDetall() {
   const [loading, setLoading] = useState(true);
   const [itemsLoading, setItemsLoading] = useState(false);
   const [favoritLoading, setFavoritLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const favoritsRef = useRef([]);
   const [page, setPage] = useState(1);
@@ -38,6 +39,11 @@ export default function PerfilDetall() {
         setPerfil(resUser.data.user);
       } catch (err) {
         console.error(err);
+        if (err.response?.data?.error) {
+          setErrorMsg(err.response.data.error);
+        } else {
+          setErrorMsg("Error carregant el perfil.");
+        }
       } finally {
         setLoading(false);
       }
@@ -123,6 +129,7 @@ export default function PerfilDetall() {
   };
 
   if (loading) return <div className="perfil-detall-full-screen-spinner"><Spinner /></div>;
+  if (errorMsg) return <div style={{textAlign: "center", marginTop: "100px", fontSize: "1.2rem", fontWeight: "bold", color: "#666", padding: "20px"}}>{errorMsg}</div>;
   if (!perfil) return <p className="perfil-detall-no-user">Usuari no trobat.</p>;
 
   return (

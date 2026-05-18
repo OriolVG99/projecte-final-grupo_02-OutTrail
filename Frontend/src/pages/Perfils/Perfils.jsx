@@ -54,54 +54,48 @@ export default function Perfils() {
   };
 
   useEffect(() => {
-    const init = async () => {
-      if (!authLoading) {
-        await loadZones();
-        await loadUsers(1);
-        setFullyLoaded(true);
+    if (authLoading) return;
+    loadZones();
+    setFullyLoaded(true);
+  }, [authLoading]);
+
+  useEffect(() => {
+    if (fullyLoaded) {
+      loadUsers(page);
+    }
+  }, [page, search, zona, experiencia, roleFilter]);
+
+  useEffect(() => {
+    if (!fullyLoaded || authLoading) return;
+    const interval = setInterval(() => {
+      loadUsers(page, true, true);
+    }, 5000);
+
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") {
+        loadUsers(page, true, true);
       }
     };
-    init();
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
 
-    if (!authLoading) {
-      const interval = setInterval(() => {
-        loadUsers(page, true, true);
-      }, 5000);
-
-      const handleFocus = () => {
-        if (document.visibilityState === "visible") {
-          loadUsers(page, true, true);
-        }
-      };
-      window.addEventListener("focus", handleFocus);
-      document.addEventListener("visibilitychange", handleFocus);
-
-      return () => {
-        clearInterval(interval);
-        window.removeEventListener("focus", handleFocus);
-        document.removeEventListener("visibilitychange", handleFocus);
-      };
-    }
-  }, [authLoading, page, search, zona, experiencia, roleFilter, token]);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
+  }, [authLoading, page, search, zona, experiencia, roleFilter, token, fullyLoaded]);
 
   const buscar = () => {
     setPage(1);
-    loadUsers(1);
   };
 
-  const nextPage = async () => {
-    const newPage = page + 1;
-    const rows = await loadUsers(newPage, false);
-    if (!rows) return;
-    setPage(newPage);
+  const nextPage = () => {
+    setPage(p => p + 1);
   };
 
-  const prevPage = async () => {
-    if (page === 1) return;
-    const newPage = page - 1;
-    const rows = await loadUsers(newPage, false);
-    if (!rows) return;
-    setPage(newPage);
+  const prevPage = () => {
+    if (page > 1) setPage(p => p - 1);
   };
 
   const canGoPrev = page > 1;

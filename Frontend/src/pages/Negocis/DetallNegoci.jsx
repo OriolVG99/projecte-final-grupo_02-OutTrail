@@ -85,6 +85,13 @@ export default function DetallNegoci() {
     });
   };
 
+  const fetchReviews = async () => {
+    try {
+      const res = await axios.get(`/api/negocis/${id}/reviews`);
+      setReviews(res.data || []);
+    } catch (err) {}
+  };
+
   const loadNegoci = async () => {
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
@@ -169,7 +176,20 @@ export default function DetallNegoci() {
 
   useEffect(() => {
     loadNegoci();
-  }, []);
+
+    const interval = setInterval(fetchReviews, 5000);
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") fetchReviews();
+    };
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
+  }, [id, token]);
 
   const eliminarNegoci = async () => {
     setConfirmOpen(false);
@@ -234,7 +254,8 @@ export default function DetallNegoci() {
   });
 
   const totalPages = Math.ceil(sortedReviews.length / reviewsPerPage);
-  const paginatedReviews = sortedReviews.slice((reviewsPage - 1) * reviewsPerPage, reviewsPage * reviewsPerPage);
+  const correctedReviewsPage = reviewsPage > totalPages ? Math.max(1, totalPages) : reviewsPage;
+  const paginatedReviews = sortedReviews.slice((correctedReviewsPage - 1) * reviewsPerPage, correctedReviewsPage * reviewsPerPage);
 
   const totalPostsPages = Math.ceil(posts.length / postsPerPage);
   const correctedPostsPage = postsPage > totalPostsPages ? Math.max(1, totalPostsPages) : postsPage;
@@ -533,16 +554,16 @@ export default function DetallNegoci() {
         {totalPages > 1 && (
           <div className="negoci-detall-pagination">
             <button 
-              disabled={reviewsPage === 1} 
-              onClick={() => setReviewsPage(p => p - 1)}
+              disabled={correctedReviewsPage === 1} 
+              onClick={() => setReviewsPage(correctedReviewsPage - 1)}
               className="negoci-detall-page-btn"
             >
               Anterior
             </button>
-            <span className="negoci-detall-page-info">Pàgina {reviewsPage} de {totalPages}</span>
+            <span className="negoci-detall-page-info">Pàgina {correctedReviewsPage} de {totalPages}</span>
             <button 
-              disabled={reviewsPage === totalPages} 
-              onClick={() => setReviewsPage(p => p + 1)}
+              disabled={correctedReviewsPage === totalPages} 
+              onClick={() => setReviewsPage(correctedReviewsPage + 1)}
               className="negoci-detall-page-btn"
             >
               Següent

@@ -103,14 +103,19 @@ export default function ExploraRutes() {
   };
 
   useEffect(() => {
-    const init = async () => {
-      await loadRutes(1);
-      await loadZones();
-      await loadFavorits();
-      setFullyLoaded(true);
-    };
-    init();
+    loadZones();
+    loadFavorits();
+    setFullyLoaded(true);
+  }, []);
 
+  useEffect(() => {
+    if (fullyLoaded) {
+      loadRutes(page);
+    }
+  }, [page, zona, dificultat, search]); // Don't include distanciaMax unless we want it to search as we type
+
+  useEffect(() => {
+    if (!fullyLoaded) return;
     const interval = setInterval(() => {
       loadRutes(page, true);
       loadFavorits();
@@ -130,25 +135,20 @@ export default function ExploraRutes() {
       window.removeEventListener("focus", handleFocus);
       document.removeEventListener("visibilitychange", handleFocus);
     };
-  }, [page, search, zona, dificultat, distanciaMax, token]);
+  }, [page, search, zona, dificultat, distanciaMax, token, fullyLoaded]);
 
   const buscar = useCallback(async () => {
     setPage(1);
     await loadRutes(1);
   }, [search, zona, dificultat, distanciaMax]);
 
-  const nextPage = useCallback(async () => {
-    const newPage = page + 1;
-    await loadRutes(newPage);
-    setPage(newPage);
-  }, [page, search, zona, dificultat, distanciaMax]);
+  const nextPage = useCallback(() => {
+    setPage(p => p + 1);
+  }, []);
 
-  const prevPage = useCallback(async () => {
-    if (page === 1) return;
-    const newPage = page - 1;
-    await loadRutes(newPage);
-    setPage(newPage);
-  }, [page, search, zona, dificultat, distanciaMax]);
+  const prevPage = useCallback(() => {
+    if (page > 1) setPage(p => p - 1);
+  }, [page]);
 
   const canGoPrev = page > 1;
   const canGoNext = hasNextPage;

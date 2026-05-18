@@ -97,14 +97,19 @@ export default function ExploraNegocis() {
   };
 
   useEffect(() => {
-    const init = async () => {
-      await loadNegocis(1);
-      await loadZones();
-      await loadFavorits();
-      setFullyLoaded(true);
-    };
-    init();
+    loadZones();
+    loadFavorits();
+    setFullyLoaded(true);
+  }, []);
 
+  useEffect(() => {
+    if (fullyLoaded) {
+      loadNegocis(page);
+    }
+  }, [page, search, zona, tipus]);
+
+  useEffect(() => {
+    if (!fullyLoaded) return;
     const interval = setInterval(() => {
       loadNegocis(page, true);
       loadFavorits();
@@ -124,25 +129,19 @@ export default function ExploraNegocis() {
       window.removeEventListener("focus", handleFocus);
       document.removeEventListener("visibilitychange", handleFocus);
     };
-  }, [page, search, zona, tipus, token]);
+  }, [page, search, zona, tipus, token, fullyLoaded]);
 
-  const buscar = useCallback(async () => {
+  const buscar = useCallback(() => {
     setPage(1);
-    await loadNegocis(1);
   }, [search, zona, tipus]);
 
-  const nextPage = useCallback(async () => {
-    const newPage = page + 1;
-    await loadNegocis(newPage);
-    setPage(newPage);
-  }, [page, search, zona, tipus]);
+  const nextPage = useCallback(() => {
+    setPage(p => p + 1);
+  }, []);
 
-  const prevPage = useCallback(async () => {
-    if (page === 1) return;
-    const newPage = page - 1;
-    await loadNegocis(newPage);
-    setPage(newPage);
-  }, [page, search, zona, tipus]);
+  const prevPage = useCallback(() => {
+    if (page > 1) setPage(p => p - 1);
+  }, [page]);
 
   const canGoPrev = page > 1;
   const canGoNext = hasNextPage;
