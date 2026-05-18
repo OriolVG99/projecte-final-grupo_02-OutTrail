@@ -73,6 +73,9 @@ export default function DetallNegoci() {
   const [reviewsPage, setReviewsPage] = useState(1);
   const reviewsPerPage = 5;
 
+  const [postsPage, setPostsPage] = useState(1);
+  const postsPerPage = 3;
+
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
     return new Date(dateStr).toLocaleDateString("ca-ES", {
@@ -233,6 +236,10 @@ export default function DetallNegoci() {
   const totalPages = Math.ceil(sortedReviews.length / reviewsPerPage);
   const paginatedReviews = sortedReviews.slice((reviewsPage - 1) * reviewsPerPage, reviewsPage * reviewsPerPage);
 
+  const totalPostsPages = Math.ceil(posts.length / postsPerPage);
+  const correctedPostsPage = postsPage > totalPostsPages ? Math.max(1, totalPostsPages) : postsPage;
+  const paginatedPosts = posts.slice((correctedPostsPage - 1) * postsPerPage, correctedPostsPage * postsPerPage);
+
   return (
     <div className="negoci-detall-page">
       {selectedImg && (
@@ -386,7 +393,7 @@ export default function DetallNegoci() {
         {posts.length === 0 ? (
           <p style={{ color: "#888", fontStyle: "italic" }}>Aquest negoci encara no ha publicat cap post.</p>
         ) : (
-          posts.map(post => {
+          paginatedPosts.map(post => {
             const fotosPost = post.fotos ? post.fotos.split(",").filter(f => f.trim() !== "") : [];
             return (
               <div key={post.id_post} className="negoci-detall-post-card">
@@ -403,10 +410,10 @@ export default function DetallNegoci() {
                     {fotosPost.map((f, idx) => (
                       <div key={idx} className="negoci-detall-post-photo-wrapper">
                         <img
-                          src={f.includes('cloudinary.com') || f.startsWith('http') ? f : `/uploads/${f}`}
-                          className="negoci-detall-post-photo"
-                          alt="Post"
-                          onClick={() => setSelectedImg(f.includes('cloudinary.com') || f.startsWith('http') ? f : `/uploads/${f}`)}
+                           src={f.includes('cloudinary.com') || f.startsWith('http') ? f : `/uploads/${f}`}
+                           className="negoci-detall-post-photo"
+                           alt="Post"
+                           onClick={() => setSelectedImg(f.includes('cloudinary.com') || f.startsWith('http') ? f : `/uploads/${f}`)}
                         />
                       </div>
                     ))}
@@ -423,6 +430,26 @@ export default function DetallNegoci() {
           })
         )}
       </div>
+
+      {totalPostsPages > 1 && (
+        <div className="negoci-detall-pagination" style={{ marginTop: "15px" }}>
+          <button 
+            disabled={correctedPostsPage === 1} 
+            onClick={() => setPostsPage(correctedPostsPage - 1)}
+            className="negoci-detall-page-btn"
+          >
+            Anterior
+          </button>
+          <span className="negoci-detall-page-info">Pàgina {correctedPostsPage} de {totalPostsPages}</span>
+          <button 
+            disabled={correctedPostsPage === totalPostsPages} 
+            onClick={() => setPostsPage(correctedPostsPage + 1)}
+            className="negoci-detall-page-btn"
+          >
+            Següent
+          </button>
+        </div>
+      )}
 
       <div style={{ marginTop: "40px" }}>
         <h2 className="negoci-detall-subtitle">Valoracions ({reviews.length})</h2>
